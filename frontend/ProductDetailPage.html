@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Product Details - Sustainable Exchange</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#eef6eb",
+                        "surface-variant": "#dce5da",
+                        "on-primary-container": "#005027",
+                        "on-secondary-fixed-variant": "#004b73",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#cce5ff",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#ebf3e8",
+                        "on-secondary-fixed": "#001d31",
+                        "surface-tint": "#006d37",
+                        "secondary-fixed-dim": "#92ccff",
+                        "on-primary-fixed": "#00210c",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#6bfe9c",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#4ae183",
+                        "secondary-container": "#5cb8fd",
+                        "on-tertiary-fixed": "#390c00",
+                        "on-surface": "#161d17",
+                        "primary-container": "#2ecc71",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#bbcbbb",
+                        "secondary": "#006397",
+                        "primary": "#006d37",
+                        "on-secondary-container": "#00476e",
+                        "surface-dim": "#d4dcd2",
+                        "inverse-surface": "#2b322b",
+                        "on-tertiary-container": "#772e14",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "outline": "#6c7b6d",
+                        "surface-container-highest": "#dce5da",
+                        "background": "#f3fcf1",
+                        "tertiary-container": "#ff9875",
+                        "on-background": "#161d17",
+                        "on-tertiary-fixed-variant": "#793015",
+                        "inverse-primary": "#4ae183",
+                        "on-primary-fixed-variant": "#005228",
+                        "surface": "#f3fcf1",
+                        "surface-container-high": "#e2ebe0",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-bright": "#f3fcf1",
+                        "on-surface-variant": "#3d4a3e",
+                        "tertiary": "#98472a",
+                        "surface-container": "#e8f0e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "base": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "price-display": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "price-display": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        * {
+            transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+            transition-duration: 200ms;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased pb-[100px] md:pb-0">
+<!-- Header - Optimized for Tablet/Desktop -->
+<header class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/40 to-transparent p-margin-mobile md:px-margin-desktop md:py-md flex justify-between items-center transition-all duration-500" id="top-bar">
+<button class="w-10 h-10 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-on-surface shadow-lg hover:shadow-xl active:scale-95 transition-all">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex gap-sm">
+<button class="w-10 h-10 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-on-surface shadow-lg hover:shadow-xl active:scale-95 transition-all">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-surface/90 backdrop-blur-md flex items-center justify-center text-on-surface shadow-lg hover:shadow-xl active:scale-95 transition-all">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas - Forced Two-Column on Tablet+ -->
+<main class="w-full max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-lg lg:gap-xl pt-0 md:pt-24 lg:pt-28 md:px-margin-desktop">
+<!-- Left Column: Gallery (Tablet: Span 6, Desktop: Span 7/8) -->
+<section class="md:col-span-6 lg:col-span-7 xl:col-span-8">
+<!-- Main Image -->
+<div class="relative w-full aspect-square sm:aspect-[4/3] md:aspect-square lg:aspect-video bg-surface-container-high md:rounded-3xl overflow-hidden shadow-sm group">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-quality, professional photograph of a vintage silver and black 35mm film camera resting on a clean, light wood surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDevPdt_7ScbzRts0ju844WgWN-QeLgy2uuEI-s5oX1dXwOT9Gv7kwRb1gg-oteXv_RHNaujIqMO8N1zFwQq5i2n-TrkbrLxKMVkggCtDxMM_oE2g02nw3UmRuzv6NCeVEkxWINR_cjrEAfuA1B73Pjtbi-l2hmvecwmmUUvK-Voki_9gO6Mwexk_bkabM8RvZtLrqdmjVODQhR64jgRIVY354O31a4nmJ2W81QSBEpJiW8yxVNKNvrALhojAyF3zwrtYLYSDJCTQiE"/>
+<!-- Page Indicator -->
+<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 md:flex bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full">
+<div class="w-2 h-2 rounded-full bg-white"></div>
+<div class="w-2 h-2 rounded-full bg-white/50"></div>
+<div class="w-2 h-2 rounded-full bg-white/50"></div>
+</div>
+</div>
+<!-- Thumbnails Gallery -->
+<div class="flex gap-md p-margin-mobile md:px-0 md:pt-md overflow-x-auto no-scrollbar scroll-smooth">
+<div class="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-2xl overflow-hidden flex-shrink-0 border-2 border-primary ring-4 ring-primary/10 cursor-pointer shadow-md">
+<img class="w-full h-full object-cover" data-alt="Close-up of prime lens" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAbOWvLj7fFRN3gV1MGzboc17Na9l1LlC7E9GxDgTPCwsd7_fDYtACKQxzdtp764Q6VfFLVlvjPGhiPBaouIsGbB6an3zonViMugKpbRWAB9ui6M6uBEhsJSBwc2WIYcqSu3ePUv7_2RiqzLmVyzr5jQ9f4QBidBk5iXGoEDLlJrFWAYJPstlpO_zOGFyzJOIm5YC0Z8W_cWws6rlM5zD159vRMgEcy4Vj4KYuLi6d6uD1CPrc5d2gqp1LsEx1fMKICb-DpxZBCpdc"/>
+</div>
+<div class="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-2xl overflow-hidden flex-shrink-0 opacity-80 hover:opacity-100 transition-all cursor-pointer shadow-sm hover:shadow-md border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="Top-down view of dials" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOEj2bRTVJ1fLZ2QN-tpcT5jeZl7sqDzuJbSXpgeo2c7Nvp6kl4HAjXHWLrJcpaZn5YyM5541gYFEQmGeocHt9HETA7VOjtxqrhMBiK2O5t6F1leAFYytKLJY5mYm1S7gqfmSmkXBjcl7L7Nv8MACrr4pnZgUgR43mgHQ_EvcDBUvlAIzxbFuUDdDDu5EcutKx_v2pU7umNY19t1-zjFZ6t-ToLb4YuU_iBbqu_hE4FKMEBehpjhKkasnShv1JwtLIfBkEcmvc2MAc"/>
+</div>
+<div class="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-2xl overflow-hidden flex-shrink-0 opacity-80 hover:opacity-100 transition-all cursor-pointer shadow-sm hover:shadow-md border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="Lifestyle shot with strap" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGGSwLg7S_4k0V7JUa4WxNfkNArnEl9OkSH5A4LEAQCmvVfoo42kKtgrEA1Tf3CvzmRuXtWIdDw94LqEPfdc5RUBM4R7mSwxbOFaSRA0KqVhjFAZCL_V0jvhiAQzIVA4DMqw03cmEHpStGgcJzeWX8YLmy_mMdEMeSKVA1hGbgTCw2eah5wBbQ34FJv4SoZJsIR2ms2Z0BfRAf8APy5otnd9N2cRvIu2EpspnTlI8iEP3kGTcfcGY8gKDaKOqKAk09z-3hwL1RDh8i"/>
+</div>
+</div>
+</section>
+<!-- Right Column: Details (Tablet: Span 6, Desktop: Span 5/4) -->
+<section class="px-margin-mobile md:px-0 md:col-span-6 lg:col-span-5 xl:col-span-4 flex flex-col gap-lg">
+<!-- Core Info Section -->
+<div class="space-y-md pt-sm md:pt-0">
+<div class="space-y-sm">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:text-2xl lg:text-headline-lg text-on-surface leading-tight">Máy Ảnh Phim Cổ Điển Canon AE-1</h1>
+<div class="flex items-center gap-sm flex-wrap">
+<span class="font-price-display text-2xl lg:text-3xl text-primary font-bold">3.500.000 đ</span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary-container/10 text-primary text-label-bold font-semibold border border-primary/20">
+                        Mới 95%
+                    </span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm bg-surface-container-low w-fit px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Đăng 2 ngày trước</span>
+</div>
+</div>
+<!-- Desktop/Tablet Action Buttons (Moved Up for Visibility) -->
+<div class="hidden md:flex flex-col gap-sm">
+<button class="w-full h-14 bg-primary text-on-primary rounded-2xl font-bold text-lg shadow-lg shadow-primary/20 hover:bg-surface-tint hover:shadow-xl active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">swap_horiz</span>
+<span>Yêu cầu trao đổi ngay</span>
+</button>
+<button class="w-full h-14 rounded-2xl border-2 border-primary text-primary font-bold text-lg hover:bg-primary/5 transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">chat</span>
+<span>Nhắn tin cho Linh</span>
+</button>
+</div>
+<!-- Seller Card -->
+<div class="p-md bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/40 flex items-center gap-md hover:bg-surface-container-low hover:border-primary/20 transition-all cursor-pointer">
+<div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 relative ring-2 ring-surface-container ring-offset-2">
+<img class="w-full h-full object-cover" data-alt="Linh Nguyễn profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWyzsUop0CcGAsJZ_NEI59Zz2FF6hGWihaItBITC855YrNr3BZ7q2dBk8e9gatKixDlEssIr9FLebhlr8dicIYNF3a8dT5gDdjCq-RjqKm3axtNPvLDeohpk0JyLGDhw_lUDuIqiF1bF5Fx-ZuBYe0JWykEaUe4VdfEwt_U3DNqzY4m5SwgyaFBeT-8ECYNbyXfuHCuO5apiFGHMOmuXJKMRBXUNer7kLw3m2CBkuHTnIEF38HcX48THGc-wOB9hKGuAiL0DI5GdKe"/>
+<div class="absolute bottom-0.5 right-0.5 w-4 h-4 bg-primary rounded-full border-2 border-surface-container-lowest shadow-sm"></div>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface !text-[17px]">Linh Nguyễn</h3>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center">
+<span class="material-symbols-outlined fill text-[#f59e0b] text-[18px]">star</span>
+<span class="font-bold ml-1">4.8</span>
+</div>
+<span class="opacity-40">|</span>
+<span class="opacity-70">124 đánh giá</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-[13px] mt-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+<span>Quận 1, TP.HCM</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline/60">chevron_right</span>
+</div>
+<hr class="border-outline-variant/20"/>
+<!-- Description Section -->
+<div class="space-y-md">
+<h2 class="font-headline-md text-headline-md text-on-surface border-l-4 border-primary pl-3">Mô tả sản phẩm</h2>
+<div class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed space-y-4">
+<p>Nhượng lại chiếc Canon AE-1 Program yêu quý. Ngoại hình còn rất mới (khoảng 95%), không xước xát đáng kể.</p>
+<div class="bg-surface-container-low/50 p-md rounded-xl">
+<p class="font-semibold text-on-surface mb-2">Phụ kiện đi kèm:</p>
+<ul class="space-y-2">
+<li class="flex items-center gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-primary/60"></span>
+<span>Lens FD 50mm f/1.8 S.C. kính đẹp</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-primary/60"></span>
+<span>Dây đeo da vintage thật</span>
+</li>
+</ul>
+</div>
+</div>
+<button class="flex items-center gap-1 text-primary font-bold text-label-bold hover:gap-2 transition-all">
+                Xem thêm <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+</button>
+</div>
+<!-- Eco Trust Badge -->
+<div class="bg-primary/5 p-md rounded-2xl flex items-start gap-md border border-primary/10 shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary fill">eco</span>
+</div>
+<div>
+<h4 class="font-label-bold text-headline-md !text-[15px] text-primary">Giao dịch xanh &amp; bền vững</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-normal">Mua đồ cũ giúp giảm thiểu rác thải điện tử và bảo vệ môi trường.</p>
+</div>
+</div>
+<div class="h-8 md:hidden"></div>
+</section>
+</main>
+<!-- Similar Products Section - Adjusted Grid for Tablet -->
+<section class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface">Sản phẩm tương tự</h2>
+<button class="text-primary font-bold text-sm hover:underline">Xem tất cả</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-md md:gap-lg">
+<!-- Item Card 1 -->
+<div class="group bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col hover:shadow-md hover:-translate-y-1 transition-all">
+<div class="aspect-[4/3] bg-surface-variant relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Polaroid SX-70" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUM4_XEKizDMFeAfha_zAJc5x9XfVzRqjdeD9NGmD7rA8W6On6S4IXI8ZOhNvaOVff5T1GXhNtRZYKCfLNe6y_Ntl3oqol1nxOgxn0ZG0sI6AUD2aF3hWotnaBl0dHzxI-_nwJmqprL1LcyDagncLanDaZNZyZF3lEj7iOQwN-U7zSBa_yTKTStSq_4MA_8429xJ6vBEsWjWl4MhlR8-48fitDTlIOHHmGAaj2AiDFBmXy0mvUB1vl2GaDHDdGVfqPDcuVlbkMZFDi"/>
+<button class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-on-surface shadow-sm hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite_border</span>
+</button>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-2">
+<h3 class="font-body-sm text-on-surface font-semibold line-clamp-2 leading-snug">Máy ảnh Polaroid SX-70 Original</h3>
+<div class="mt-auto">
+<p class="font-price-display text-primary font-bold">4.200.000 đ</p>
+</div>
+</div>
+</div>
+<!-- Item Card 2 -->
+<div class="group bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col hover:shadow-md hover:-translate-y-1 transition-all">
+<div class="aspect-[4/3] bg-surface-variant relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Pentax K1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFFoEQgCTUmMXLsNzb9vWsXaEOeJFceowK_zRCUhSmLUhtMx2Pwf3XZoQr8LgWCbkco_ozqwWJbm9UUgLGD7wXAI0ZD6R7fp6GI_Vg96XWg1KecB4ti0sS4l0wkXpkxlhUJOOaCPs8eb8J9dXHlBOXe8bWMZxY3ejnHyjQJMhCfHnRIVfa7gpe3IBl1aCfOKz9FUH2ACve9VSx-KOBln17AR4LUVxg0G5AnYHL1noO6U6ITpS2IilKP_WRZaxC7J87HiA5qmj8RAnc"/>
+<button class="absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-on-surface shadow-sm hover:text-error transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite_border</span>
+</button>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-2">
+<h3 class="font-body-sm text-on-surface font-semibold line-clamp-2 leading-snug">Pentax K1000 + Lens SMC 50mm</h3>
+<div class="mt-auto">
+<p class="font-price-display text-primary font-bold">2.800.000 đ</p>
+</div>
+</div>
+</div>
+<!-- Item Card 3 -->
+<div class="group bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col hover:shadow-md hover:-translate-y-1 transition-all">
+<div class="aspect-[4/3] bg-surface-variant relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Kodak Portra 400" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMXas4wkKw3iKg5ySp3GPo1rXGLTxGqm2cW3V2Z0--J5kfY3nC7p9ELCucPA_E0clgHEzHOxbFK82ePLzdFMulfLzhLDcA7aeOK6PaxriYLgvRKyb6qSeMjH2w0wmGf9TeKg_aiM5-t6mVGvQO0Xha4bL5fgwT_FsFpGCHMzRydxm06KoNYHyar-JWBKS92uQsTHmEPEl8sYyuCHuz4qAVpO52VPmfbd6KshGe-8KDV_5k0r4JHRhYM73ajYjV18f0ZXVQCBaCwIJB"/>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-2">
+<h3 class="font-body-sm text-on-surface font-semibold line-clamp-2 leading-snug">Cuộn Phim Kodak Portra 400 (36 exp)</h3>
+<div class="mt-auto">
+<p class="font-price-display text-primary font-bold">350.000 đ</p>
+</div>
+</div>
+</div>
+<!-- Item Card 4 (Visible on md+) -->
+<div class="hidden md:flex group bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden flex-col hover:shadow-md hover:-translate-y-1 transition-all">
+<div class="aspect-[4/3] bg-surface-variant relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJKNnNAKBNVO52VAG9hGfukk_Z1ZjzcqNj6_5WmwCV9mJIYgnnNl7QuNIXTn-z7GGjystRDAf2NKDZmsjraHhl6lT20jua0Nq9Ma-hk6jmCdxqzZ1RtSvhw7WlxG2ASDGTB5yZRZQajj87jCaF_2VJb34dqCcTpWy7pmdH0XnMnKGgHaGPxxQH3lYUIVFoNIrtwGorbXQk1z97o892Pn2E7BV-DfPTxcHN_1J05BddmRPhHpuQeCZkU8z-WpJFsOrYskDQhXWmEW-Z"/>
+</div>
+<div class="p-4 flex flex-col flex-1 gap-2">
+<h3 class="font-body-sm text-on-surface font-semibold line-clamp-2 leading-snug">Bao da Canon AE-1 Case</h3>
+<div class="mt-auto">
+<p class="font-price-display text-primary font-bold">450.000 đ</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Fixed Bottom Action Bar (Mobile Only) -->
+<div class="fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/90 backdrop-blur-lg border-t border-outline-variant/20 px-margin-mobile py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0px_-8px_24px_rgba(0,0,0,0.06)] flex items-center gap-md md:hidden">
+<button class="w-14 h-14 flex-shrink-0 flex items-center justify-center rounded-2xl bg-surface-container-high text-on-surface hover:bg-surface-variant transition-all active:scale-90">
+<span class="material-symbols-outlined text-[28px]">chat</span>
+</button>
+<button class="flex-1 h-14 bg-primary text-on-primary rounded-2xl font-bold text-md shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+<span>Yêu cầu trao đổi</span>
+</button>
+</div>
+<!-- Desktop/Tablet Sticky Bottom Bar (Shows on Scroll) -->
+<div class="hidden md:block fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/20 py-4 shadow-[0px_-8px_32px_rgba(0,0,0,0.05)] transform translate-y-full transition-transform duration-300" id="desktop-bottom-bar">
+<div class="max-w-[1280px] mx-auto px-margin-desktop flex justify-between items-center">
+<div class="flex items-center gap-md">
+<img class="w-14 h-14 rounded-xl object-cover shadow-sm" data-alt="Thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDevPdt_7ScbzRts0ju844WgWN-QeLgy2uuEI-s5oX1dXwOT9Gv7kwRb1gg-oteXv_RHNaujIqMO8N1zFwQq5i2n-TrkbrLxKMVkggCtDxMM_oE2g02nw3UmRuzv6NCeVEkxWINR_cjrEAfuA1B73Pjtbi-l2hmvecwmmUUvK-Voki_9gO6Mwexk_bkabM8RvZtLrqdmjVODQhR64jgRIVY354O31a4nmJ2W81QSBEpJiW8yxVNKNvrALhojAyF3zwrtYLYSDJCTQiE"/>
+<div>
+<h3 class="font-bold text-on-surface">Canon AE-1 Program</h3>
+<p class="text-primary font-bold">3.500.000 đ</p>
+</div>
+</div>
+<div class="flex gap-md">
+<button class="px-8 h-12 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-all">
+                Nhắn tin
+            </button>
+<button class="px-10 h-12 bg-primary text-on-primary rounded-xl font-bold shadow-lg shadow-primary/20 hover:bg-surface-tint active:scale-95 transition-all">
+                Yêu cầu trao đổi
+            </button>
+</div>
+</div>
+</div>
+<script>
+    const topBar = document.getElementById('top-bar');
+    const desktopBottomBar = document.getElementById('desktop-bottom-bar');
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 100) {
+            topBar.classList.remove('from-black/40', 'to-transparent');
+            topBar.classList.add('bg-surface/95', 'backdrop-blur-lg', 'shadow-md', 'py-md');
+        } else {
+            topBar.classList.add('from-black/40', 'to-transparent');
+            topBar.classList.remove('bg-surface/95', 'backdrop-blur-lg', 'shadow-md', 'py-md');
+        }
+        
+        if (window.scrollY > 600) {
+            desktopBottomBar.classList.remove('translate-y-full');
+        } else {
+            desktopBottomBar.classList.add('translate-y-full');
+        }
+    });
+</script>
+</body></html>

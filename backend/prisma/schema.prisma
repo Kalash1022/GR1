@@ -1,0 +1,262 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum UserRole {
+  PROVIDER
+  SEEKER
+  ADMIN
+}
+
+enum ExchangeType {
+  SELL
+  EXCHANGE
+  DONATE
+}
+
+enum ProductStatus {
+  AVAILABLE
+  SOLD
+  EXCHANGED
+  DONATED
+}
+
+enum ProductCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  FAIR
+  POOR
+}
+
+enum ReportReason {
+  SPAM
+  SCAM
+  INAPPROPRIATE_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+// ==========================================
+// CORE ENTITIES
+// ==========================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone     String?
+  address   String?
+  avatar    String?
+  role      UserRole @default(SEEKER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  products       Product[]
+  sentMessages   Message[]  @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+  reportsFiled   Report[]   @relation("ReportsFiled")
+  reportsAgainst Report[]   @relation("ReportsAgainst")
+
+  // Future extension
+  preferences          UserPreference?
+  behaviors            UserBehavior[]
+  recommendationHistory RecommendationHistory[]
+  exchangeRequestsSent     ExchangeRequest[] @relation("ExchangeRequester")
+  exchangeRequestsReceived ExchangeRequest[] @relation("ExchangeReceiver")
+
+  @@map("users")
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  slug     String    @unique
+  icon     String?
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String           @id @default(uuid())
+  title       String
+  description String
+  price       Float?
+  condition   ProductCondition @default(GOOD)
+  type        ExchangeType     @default(SELL)
+  status      ProductStatus    @default(AVAILABLE)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  owner      User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId    String
+  category   Category       @relation(fields: [categoryId], references: [id])
+  categoryId String
+  images     ProductImage[]
+  location   Location?
+  reports    Report[]
+
+  // Future extension
+  exchangeRequestsAsOffered  ExchangeRequest[] @relation("OfferedProduct")
+  exchangeRequestsAsWanted   ExchangeRequest[] @relation("WantedProduct")
+
+  @@index([title])
+  @@index([ownerId])
+  @@index([categoryId])
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(uuid())
+  url       String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  @@map("product_images")
+}
+
+model Location {
+  id        String  @id @default(uuid())
+  address   String
+  latitude  Float?
+  longitude Float?
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String  @unique
+
+  @@map("locations")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  sender     User   @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId   String
+  receiver   User   @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+
+  @@index([senderId, receiverId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model Report {
+  id        String       @id @default(uuid())
+  reason    ReportReason
+  details   String?
+  status    ReportStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  reporter        User     @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId      String
+  targetUser      User?    @relation("ReportsAgainst", fields: [targetUserId], references: [id], onDelete: SetNull)
+  targetUserId    String?
+  targetProduct   Product? @relation(fields: [targetProductId], references: [id], onDelete: SetNull)
+  targetProductId String?
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("reports")
+}
+
+// ==========================================
+// FUTURE EXTENSION TABLES
+// ==========================================
+
+model UserPreference {
+  id                  String   @id @default(uuid())
+  preferredCategories String[] // category IDs
+  preferredLocations  String[] // location strings
+  preferredTypes      ExchangeType[]
+  priceRangeMin       Float?
+  priceRangeMax       Float?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  @@map("user_preferences")
+}
+
+model UserBehavior {
+  id         String   @id @default(uuid())
+  action     String   // VIEW, SEARCH, CLICK, SAVE, etc.
+  targetId   String?  // product_id or category_id
+  targetType String?  // PRODUCT, CATEGORY, USER
+  metadata   Json?    // additional context
+  createdAt  DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("user_behaviors")
+}
+
+model RecommendationHistory {
+  id               String   @id @default(uuid())
+  recommendedItems String[] // product IDs
+  algorithm        String   // CONTENT_BASED, COLLABORATIVE, HYBRID
+  score            Float?
+  clicked          Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("recommendation_history")
+}
+
+model ExchangeRequest {
+  id        String   @id @default(uuid())
+  message   String?
+  status    String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  requester        User    @relation("ExchangeRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  requesterId      String
+  receiver         User    @relation("ExchangeReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId       String
+  offeredProduct   Product @relation("OfferedProduct", fields: [offeredProductId], references: [id], onDelete: Cascade)
+  offeredProductId String
+  wantedProduct    Product @relation("WantedProduct", fields: [wantedProductId], references: [id], onDelete: Cascade)
+  wantedProductId  String
+
+  @@index([requesterId])
+  @@index([receiverId])
+  @@map("exchange_requests")
+}

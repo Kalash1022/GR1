@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post New Item</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#eef6eb",
+                      "surface-variant": "#dce5da",
+                      "on-primary-container": "#005027",
+                      "on-secondary-fixed-variant": "#004b73",
+                      "on-error-container": "#93000a",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#cce5ff",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#ebf3e8",
+                      "on-secondary-fixed": "#001d31",
+                      "surface-tint": "#006d37",
+                      "secondary-fixed-dim": "#92ccff",
+                      "on-primary-fixed": "#00210c",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed": "#6bfe9c",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#4ae183",
+                      "secondary-container": "#5cb8fd",
+                      "on-tertiary-fixed": "#390c00",
+                      "on-surface": "#161d17",
+                      "primary-container": "#2ecc71",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#bbcbbb",
+                      "secondary": "#006397",
+                      "primary": "#006d37",
+                      "on-secondary-container": "#00476e",
+                      "surface-dim": "#d4dcd2",
+                      "inverse-surface": "#2b322b",
+                      "on-tertiary-container": "#772e14",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "outline": "#6c7b6d",
+                      "surface-container-highest": "#dce5da",
+                      "background": "#f3fcf1",
+                      "tertiary-container": "#ff9875",
+                      "on-background": "#161d17",
+                      "on-tertiary-fixed-variant": "#793015",
+                      "inverse-primary": "#4ae183",
+                      "on-primary-fixed-variant": "#005228",
+                      "surface": "#f3fcf1",
+                      "surface-container-high": "#e2ebe0",
+                      "tertiary-fixed": "#ffdbd0",
+                      "surface-bright": "#f3fcf1",
+                      "on-surface-variant": "#3d4a3e",
+                      "tertiary": "#98472a",
+                      "surface-container": "#e8f0e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "xs": "4px",
+                      "margin-desktop": "32px",
+                      "gutter": "16px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "xl": "32px",
+                      "base": "4px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "price-display": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-bold": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "price-display": ["18px", {"lineHeight": "24px", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased pb-24 md:pb-8">
+<!-- TopAppBar -->
+<header class="bg-surface shadow-[0px_4px_12px_rgba(44,62,80,0.05)] w-full top-0 flex justify-center items-center h-16 fixed z-40">
+<div class="w-full max-w-5xl flex justify-between items-center px-margin-mobile md:px-margin-desktop">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-primary font-bold">Sustainable Exchange</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="pt-[80px] px-margin-mobile md:px-margin-desktop max-w-5xl mx-auto flex flex-col gap-lg">
+<div class="pt-sm pb-xs md:text-center">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:text-headline-lg text-on-surface">Đăng tin mới</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Chia sẻ sản phẩm của bạn với cộng đồng.</p>
+</div>
+<!-- Image Upload Section -->
+<section class="flex flex-col gap-sm max-w-4xl mx-auto w-full">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface text-[16px]">Hình ảnh sản phẩm</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Tối đa 5 ảnh</span>
+</div>
+<div class="grid grid-flow-col auto-cols-[140px] md:auto-cols-[180px] gap-md overflow-x-auto hide-scrollbar pb-xs snap-x">
+<!-- Add New Photo Button -->
+<button class="flex-shrink-0 aspect-square rounded-xl border-2 border-dashed border-primary bg-surface-container-low flex flex-col items-center justify-center text-primary hover:bg-surface-container transition-colors snap-start active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[36px] mb-1" data-icon="add_a_photo">add_a_photo</span>
+<span class="font-label-bold text-label-bold">Thêm ảnh</span>
+</button>
+<!-- Placeholder Photo 1 (Simulated Uploaded) -->
+<div class="relative flex-shrink-0 aspect-square rounded-xl overflow-hidden shadow-[0px_4px_12px_rgba(44,62,80,0.05)] snap-start group">
+<img alt="Vintage film camera" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlXodDDB6AtLXcG9DxvOdN9tx-qRq7e12qB_52lLOScYfF1lp8GaoKmd9n1lk8CGfCFlmXx26J9PuxN_legh6bmj-SL8Cg-wu-YPZ7kzHscdLNk7kGiQ0VyIcBG_hU7pIBgp3AAtucab4lhFmAjqRb0oEo8VOJbpbXRaDcL7_XQBMMvtH-ynqwaUkvnhtkDoaevQb8eJDHUCtn73yvWyNVtha0aqzaHeZrjEShHrKKNbwW8OWLCXw8zyy0ABwymkqhFf2OfaVduQdo"/>
+<button class="absolute top-2 right-2 bg-surface/80 rounded-full p-1.5 text-error backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</div>
+<!-- Empty Placeholders -->
+<div class="flex-shrink-0 aspect-square rounded-xl bg-surface-container-high flex items-center justify-center text-outline-variant snap-start">
+<span class="material-symbols-outlined text-[28px]" data-icon="image">image</span>
+</div>
+<div class="flex-shrink-0 aspect-square rounded-xl bg-surface-container-high flex items-center justify-center text-outline-variant snap-start">
+<span class="material-symbols-outlined text-[28px]" data-icon="image">image</span>
+</div>
+<div class="flex-shrink-0 aspect-square rounded-xl bg-surface-container-high flex items-center justify-center text-outline-variant snap-start">
+<span class="material-symbols-outlined text-[28px]" data-icon="image">image</span>
+</div>
+</div>
+</section>
+<!-- Form Section -->
+<form class="bg-surface shadow-[0px_4px_12px_rgba(44,62,80,0.05)] rounded-2xl p-md md:p-xl border border-surface-variant/50 max-w-4xl mx-auto w-full">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-xl gap-y-lg">
+<!-- Title -->
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="title">Tiêu đề</label>
+<input class="w-full h-14 md:h-12 bg-surface-container-lowest rounded-xl border border-outline-variant px-md font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline" id="title" placeholder="VD: Máy ảnh phim Canon AE-1" type="text"/>
+</div>
+<!-- Category -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="category">Danh mục</label>
+<div class="relative">
+<select class="w-full h-14 md:h-12 bg-surface-container-lowest rounded-xl border border-outline-variant px-md font-body-lg text-body-lg text-on-surface appearance-none focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" id="category">
+<option disabled="" selected="" value="">Chọn danh mục</option>
+<option value="electronics">Điện tử &amp; Đồ công nghệ</option>
+<option value="fashion">Thời trang</option>
+<option value="home">Đồ gia dụng</option>
+<option value="books">Sách &amp; Văn phòng phẩm</option>
+</select>
+<span class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Condition -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">Tình trạng</label>
+<div class="flex bg-surface-container rounded-xl p-1 h-14 md:h-12">
+<button class="flex-1 rounded-lg font-label-bold text-label-bold bg-surface shadow-sm text-primary transition-all" type="button">
+                        Đã sử dụng
+                    </button>
+<button class="flex-1 rounded-lg font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high transition-all" type="button">
+                        Mới
+                    </button>
+</div>
+</div>
+<!-- Price / Swap -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">Giá bán</label>
+<div class="flex gap-sm items-center">
+<div class="relative flex-1">
+<input class="w-full h-14 md:h-12 bg-surface-container-lowest rounded-xl border border-outline-variant pl-md pr-10 font-price-display text-price-display text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="0" type="number"/>
+<span class="absolute right-md top-1/2 -translate-y-1/2 font-body-lg text-body-lg text-on-surface-variant">đ</span>
+</div>
+</div>
+</div>
+<!-- Trade Option -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-bold text-label-bold text-on-surface-variant">Hình thức khác</label>
+<label class="flex items-center gap-3 cursor-pointer bg-surface-container-low px-md py-2 h-14 md:h-12 rounded-xl border border-outline-variant/30 hover:bg-surface-container transition-colors w-full">
+<input class="w-6 h-6 md:w-5 md:h-5 rounded text-primary border-outline-variant focus:ring-primary" type="checkbox"/>
+<span class="font-label-bold text-label-bold text-on-surface">Chấp nhận trao đổi đồ</span>
+</label>
+</div>
+<!-- Location -->
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="location">Khu vực giao dịch</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-primary" data-icon="location_on">location_on</span>
+<input class="w-full h-14 md:h-12 bg-surface-container-lowest rounded-xl border border-outline-variant pl-[44px] pr-md font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer" id="location" placeholder="Chọn vị trí" readonly="" type="text" value="Quận 1, TP. Hồ Chí Minh"/>
+</div>
+</div>
+<!-- Description -->
+<div class="flex flex-col gap-xs md:col-span-2">
+<label class="font-label-bold text-label-bold text-on-surface-variant" for="description">Mô tả chi tiết sản phẩm của bạn</label>
+<textarea class="w-full bg-surface-container-lowest rounded-xl border border-outline-variant p-md font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all min-h-[160px] md:min-h-[140px] resize-y placeholder:text-outline" id="description" placeholder="Mô tả tình trạng, thời gian sử dụng, phụ kiện đi kèm..."></textarea>
+</div>
+</div>
+</form>
+<!-- Submit Button -->
+<div class="flex justify-center mb-10 md:mb-12">
+<button class="w-full max-w-md bg-primary text-on-primary font-headline-md text-headline-md py-4 md:py-5 rounded-2xl shadow-[0px_4px_12px_rgba(44,62,80,0.1)] hover:bg-surface-tint hover:shadow-lg transition-all active:scale-[0.98] mt-sm flex items-center justify-center gap-3">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+            Đăng tin ngay
+        </button>
+</div>
+</main>
+<!-- BottomNavBar (Visible only on mobile/tablet) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-2xl bg-surface border-t border-outline-variant shadow-[0px_-4px_12px_rgba(44,62,80,0.05)] flex justify-around items-center px-xs py-sm md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-low rounded-xl transition-colors active:scale-90 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-low rounded-xl transition-colors active:scale-90 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="font-label-bold text-label-bold">Search</span>
+</button>
+<!-- Active Tab: Post -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-3 py-1 active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-bold text-label-bold">Post</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-low rounded-xl transition-colors active:scale-90 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="chat">chat</span>
+<span class="font-label-bold text-label-bold">Messages</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:bg-surface-container-low rounded-xl transition-colors active:scale-90 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</button>
+</nav>
+</body></html>

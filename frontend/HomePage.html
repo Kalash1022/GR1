@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sustainable Exchange - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#eef6eb",
+                      "surface-variant": "#dce5da",
+                      "on-primary-container": "#005027",
+                      "on-secondary-fixed-variant": "#004b73",
+                      "on-error-container": "#93000a",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#cce5ff",
+                      "error": "#ba1a1a",
+                      "inverse-on-surface": "#ebf3e8",
+                      "on-secondary-fixed": "#001d31",
+                      "surface-tint": "#006d37",
+                      "secondary-fixed-dim": "#92ccff",
+                      "on-primary-fixed": "#00210c",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed": "#6bfe9c",
+                      "on-tertiary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#4ae183",
+                      "secondary-container": "#5cb8fd",
+                      "on-tertiary-fixed": "#390c00",
+                      "on-surface": "#161d17",
+                      "primary-container": "#2ecc71",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#bbcbbb",
+                      "secondary": "#006397",
+                      "primary": "#006d37",
+                      "on-secondary-container": "#00476e",
+                      "surface-dim": "#d4dcd2",
+                      "inverse-surface": "#2b322b",
+                      "on-tertiary-container": "#772e14",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "outline": "#6c7b6d",
+                      "surface-container-highest": "#dce5da",
+                      "background": "#f3fcf1",
+                      "tertiary-container": "#ff9875",
+                      "on-background": "#161d17",
+                      "on-tertiary-fixed-variant": "#793015",
+                      "inverse-primary": "#4ae183",
+                      "on-primary-fixed-variant": "#005228",
+                      "surface": "#f3fcf1",
+                      "surface-container-high": "#e2ebe0",
+                      "tertiary-fixed": "#ffdbd0",
+                      "surface-bright": "#f3fcf1",
+                      "on-surface-variant": "#3d4a3e",
+                      "tertiary": "#98472a",
+                      "surface-container": "#e8f0e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "1rem",
+                      "xs": "0.25rem",
+                      "margin-desktop": "2rem",
+                      "gutter": "1rem",
+                      "lg": "1.5rem",
+                      "md": "1rem",
+                      "xl": "2rem",
+                      "base": "0.25rem",
+                      "sm": "0.5rem"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "price-display": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-bold": ["Inter"]
+              },
+              "fontSize": {
+                      "body-lg": ["1rem", {"lineHeight": "1.5rem", "fontWeight": "400"}],
+                      "headline-lg": ["2.25rem", {"lineHeight": "2.75rem", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "price-display": ["1.25rem", {"lineHeight": "1.75rem", "fontWeight": "700"}],
+                      "headline-md": ["1.5rem", {"lineHeight": "2rem", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["1.75rem", {"lineHeight": "2.25rem", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-sm": ["0.9375rem", {"lineHeight": "1.375rem", "fontWeight": "400"}],
+                      "label-bold": ["0.8125rem", {"lineHeight": "1.125rem", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { min-height: 100dvh; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen pb-20 md:pb-0">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-surface/80 backdrop-blur-md dark:bg-surface-dim/80 shadow-sm border-b border-outline-variant/20">
+<div class="flex justify-between items-center px-6 md:px-12 h-20 w-full max-w-6xl mx-auto">
+<div class="flex items-center space-x-6">
+<button class="text-on-surface-variant hover:bg-surface-container-high p-3 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed truncate">Sustainable Exchange</h1>
+</div>
+<div class="flex items-center space-x-4">
+<button class="hidden sm:flex text-on-surface-variant hover:bg-surface-container-high p-3 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high p-3 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-6xl mx-auto w-full px-6 md:px-12 py-8 md:py-12 space-y-10 md:space-y-16">
+<!-- Search Bar -->
+<div class="relative w-full max-w-3xl mx-auto">
+<div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-2xl">search</span>
+</div>
+<input class="block w-full pl-14 pr-6 py-4 border border-outline-variant rounded-2xl bg-surface-container-lowest text-on-surface placeholder-outline focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-base shadow-sm transition-all" placeholder="Tìm kiếm sản phẩm, người dùng..." type="text"/>
+</div>
+<!-- Hero Banner -->
+<div class="relative w-full aspect-[21/9] min-h-[16rem] rounded-3xl overflow-hidden shadow-lg group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Eco-friendly swap banner" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6oAtvcdSDdNHbFezOfx52mSprYoNOoAD2QyHHE36gJhOmmDTqzRyHEiGSaYpSKbqAkEXFt6DKBnOiAEpPta5BNBudmSh8gQGLxRNj_Cg0XaEKx7DRQRqOABcqq4mJC7ozg1UdyfQr95oNjPE-9PSuDSiVFqGg_O8tm6t_6NjrnkBU9fLRg84LhSZG5n0wa5bR-yAtdrfG44-SVygRqwSbAPY2ksOmZcXvC77P8603dOrsiO8F1Jj9qMQKSwgGBcyWJSFKRAXxfuxM')"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+<div class="relative z-10 h-full flex flex-col justify-center items-start px-8 md:px-16 max-w-2xl">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-white mb-6 drop-shadow-md leading-tight">Trao đổi đồ cũ<br class="hidden sm:block"/>Bảo vệ môi trường</h2>
+<button class="bg-primary-container text-on-primary-container font-label-bold text-base py-4 px-8 rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95">Tham gia ngay</button>
+</div>
+</div>
+<!-- Categories -->
+<section>
+<div class="flex justify-between items-end mb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface">Danh mục</h3>
+</div>
+<div class="flex overflow-x-auto space-x-6 md:space-x-10 pb-6 no-scrollbar -mx-6 px-6">
+<!-- Category Item -->
+<button class="flex-shrink-0 flex flex-col items-center group">
+<div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-secondary-container flex items-center justify-center text-on-secondary-container mb-4 shadow-sm group-hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl md:text-4xl">checkroom</span>
+</div>
+<span class="font-body-sm text-on-surface-variant group-hover:text-primary transition-colors font-medium">Thời trang</span>
+</button>
+<button class="flex-shrink-0 flex flex-col items-center group">
+<div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-tertiary-container flex items-center justify-center text-on-tertiary-container mb-4 shadow-sm group-hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl md:text-4xl">devices</span>
+</div>
+<span class="font-body-sm text-on-surface-variant group-hover:text-primary transition-colors font-medium">Điện tử</span>
+</button>
+<button class="flex-shrink-0 flex flex-col items-center group">
+<div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-primary-container flex items-center justify-center text-on-primary-container mb-4 shadow-sm group-hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl md:text-4xl">chair</span>
+</div>
+<span class="font-body-sm text-on-surface-variant group-hover:text-primary transition-colors font-medium">Gia dụng</span>
+</button>
+<button class="flex-shrink-0 flex flex-col items-center group">
+<div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-surface-variant flex items-center justify-center text-on-surface-variant mb-4 shadow-sm group-hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl md:text-4xl">menu_book</span>
+</div>
+<span class="font-body-sm text-on-surface-variant group-hover:text-primary transition-colors font-medium">Sách</span>
+</button>
+<button class="flex-shrink-0 flex flex-col items-center group">
+<div class="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-surface-container-high flex items-center justify-center text-on-surface-variant mb-4 shadow-sm group-hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined text-3xl md:text-4xl">more_horiz</span>
+</div>
+<span class="font-body-sm text-on-surface-variant group-hover:text-primary transition-colors font-medium">Khác</span>
+</button>
+</div>
+</section>
+<!-- Product Grid -->
+<section>
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface">Khám phá</h3>
+<button class="font-label-bold text-base text-secondary hover:underline flex items-center">
+                    Xem tất cả <span class="material-symbols-outlined text-lg ml-2">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden border border-outline-variant/30 flex flex-col hover:shadow-2xl transition-all cursor-pointer group">
+<div class="relative aspect-square overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPXceZJWzivY6BpH1JZs-n1yN905IFKkYkdkrS1EF5PWOH320JcNNYK-dNs55f3dilG6BPWDzfRv1YpQ-67kBnaYJoVsHtC4YXlwF-9qR-HDFmo_ERFwRRL5Oli1a0BIvQk8KjYee29SwcnmRJjouK8eUijk-W0B-SVuE7Q0qDmFvpxN17Z00SPL_GvUBHp-ASg1mZcit1Z43pygw63phjYqV803rax28dzeyPhkFL20JOTTeFNQNqUJhQVpr5TLmN4O392VZ4d2dp"/>
+<div class="absolute top-3 left-3 bg-surface/90 backdrop-blur-sm rounded-xl px-3 py-1.5 flex items-center space-x-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">eco</span>
+<span class="font-label-bold text-[11px] text-on-surface uppercase">Đã xác thực</span>
+</div>
+</div>
+<div class="p-4 md:p-6 flex flex-col flex-grow">
+<h4 class="font-body-sm font-semibold text-base line-clamp-2 mb-3 group-hover:text-primary transition-colors">iPhone 12 Pro Max 256GB - Còn bảo hành</h4>
+<div class="mt-auto">
+<p class="font-price-display text-secondary text-lg mb-3">12.000.000đ</p>
+<div class="flex items-center text-on-surface-variant text-[13px]">
+<span class="material-symbols-outlined text-[18px] mr-1.5">location_on</span>
+<span class="truncate">Quận 1, TP.HCM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden border border-outline-variant/30 flex flex-col hover:shadow-2xl transition-all cursor-pointer group">
+<div class="relative aspect-square overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGnfhlfTg_Vqe1CLzo-2fGWx7JzIF8_YH5Wo3I9A4Ymqy447FlDz8Y2fv744DrFlmGpmblTOkjgy0v6Z4jNkF1Nssr_Waj6qo5_D6aID9FzDH-tSkMtQA3WuQoNwOx2Fiw0m2PC5lvMAWwSRukCY9XmpycNFBhhI5YG5nl4Wj35RpTKt-PzdKqZIlimvSZg4GDtfYoPMPiAEzfJXgrMYkmJci76RRcQu5zw0zyzgPXz51N-lkkwL_Jm4HUQluwoq_20brYy_6IZDKw"/>
+</div>
+<div class="p-4 md:p-6 flex flex-col flex-grow">
+<h4 class="font-body-sm font-semibold text-base line-clamp-2 mb-3 group-hover:text-primary transition-colors">Váy vintage hoa nhí tiểu thư</h4>
+<div class="mt-auto">
+<div class="inline-flex items-center bg-primary-container/15 text-primary px-3 py-1.5 rounded-xl border border-primary-container/20 mb-3">
+<span class="material-symbols-outlined text-[18px] mr-1.5">sync_alt</span>
+<span class="font-label-bold">Trao đổi</span>
+</div>
+<div class="flex items-center text-on-surface-variant text-[13px]">
+<span class="material-symbols-outlined text-[18px] mr-1.5">location_on</span>
+<span class="truncate">Cầu Giấy, Hà Nội</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden border border-outline-variant/30 flex flex-col hover:shadow-2xl transition-all cursor-pointer group">
+<div class="relative aspect-square overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDOYk0qo4GHxQt7DKWS6sOQdfa-HgbrWPefhSs1K2-2rhWjFwfOSHo3Nje2im2ySqqr2MGQ8QZe1SNW_cEbHkht9asi7TlKCyNczNzpzgKIkKYFyisabcq8VFlos-c4lwmncSIQNXT6irQ1K-GhjWGqURhJxdz_B-XNwHAJ7L0OATl_KUtDJBQa_umg3SzAfR5laGk6mtfSpJcz8uPM-RSKIZD8VLfFfddGi60WXSIfvWh6ZxuNkgD1qjezq7JmBFPg4vgD3lQV8sY"/>
+</div>
+<div class="p-4 md:p-6 flex flex-col flex-grow">
+<h4 class="font-body-sm font-semibold text-base line-clamp-2 mb-3 group-hover:text-primary transition-colors">Bàn phím cơ Keychron K2V2</h4>
+<div class="mt-auto">
+<p class="font-price-display text-secondary text-lg mb-3">950.000đ</p>
+<div class="flex items-center text-on-surface-variant text-[13px]">
+<span class="material-symbols-outlined text-[18px] mr-1.5">location_on</span>
+<span class="truncate">Hải Châu, Đà Nẵng</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden border border-outline-variant/30 flex flex-col hover:shadow-2xl transition-all cursor-pointer group">
+<div class="relative aspect-square overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYfJbYFdcqhyd9MNOIj6wqVkExgl70IYRxgVRBdbu2fAkrB7Tfs7t-WNuCKZPUJV_yXnQmuqCRd0rYCH1ksy1Pwf-tMdPu9CkrgWfT5zDVN3gzL5DaWG5YXR6A6kRry3w9SQRmrNIg7zIgBR5QVrP7wfRpiznN9N1VzC15hPqcgh14zBepDuEnL6ip9WhfVxfuEKLHSs17dLMVGrfPg3qQjnnX1QRxdb_L5JkucRhdwGIU_7ggpmgGNAu5WAFPUcEypSYuZxqX_ZnZ"/>
+</div>
+<div class="p-4 md:p-6 flex flex-col flex-grow">
+<h4 class="font-body-sm font-semibold text-base line-clamp-2 mb-3 group-hover:text-primary transition-colors">Combo 3 sách khoa học viễn tưởng</h4>
+<div class="mt-auto">
+<div class="inline-flex items-center bg-primary-container/15 text-primary px-3 py-1.5 rounded-xl border border-primary-container/20 mb-3">
+<span class="material-symbols-outlined text-[18px] mr-1.5">sync_alt</span>
+<span class="font-label-bold">Trao đổi</span>
+</div>
+<div class="flex items-center text-on-surface-variant text-[13px]">
+<span class="material-symbols-outlined text-[18px] mr-1.5">location_on</span>
+<span class="truncate">Quận 7, TP.HCM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile/Tablet Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface/95 backdrop-blur-md dark:bg-surface-container-highest shadow-[0px_-6px_16px_rgba(0,0,0,0.06)] rounded-t-[2.5rem] border-t border-outline-variant/10">
+<div class="flex justify-around items-center h-24 px-4">
+<button class="flex flex-col items-center justify-center text-primary flex-1">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-bold mt-1.5">Trang chủ</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant flex-1">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 0;">search</span>
+<span class="text-[11px] font-medium mt-1.5">Tìm kiếm</span>
+</button>
+<button class="flex flex-col items-center justify-center -mt-10">
+<div class="bg-primary text-white p-5 rounded-2xl shadow-xl shadow-primary/30 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</div>
+<span class="text-[11px] font-bold mt-2.5 text-primary">Đăng tin</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant flex-1">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 0;">chat</span>
+<span class="text-[11px] font-medium mt-1.5">Tin nhắn</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant flex-1">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="text-[11px] font-medium mt-1.5">Cá nhân</span>
+</button>
+</div>
+</nav>
+</body></html>
