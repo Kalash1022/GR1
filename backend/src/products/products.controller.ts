@@ -7,18 +7,16 @@ import {
   Body,
   Param,
   Query,
-  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
-import { ProductStatus, UserRole } from '@prisma/client';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { QueryProductDto } from './dto/query-product.dto';
+import { SearchProductsDto } from './dto/search-products.dto';
+import { UpdateProductStatusDto } from './dto/update-product-status.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
 
 @ApiTags('Products')
 @Controller('products')
@@ -27,8 +25,6 @@ export class ProductsController {
 
   @Post()
   @ApiBearerAuth()
-  @UseGuards(RolesGuard)
-  @Roles(UserRole.PROVIDER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new product' })
   async create(
     @CurrentUser('id') userId: string,
@@ -42,6 +38,13 @@ export class ProductsController {
   @ApiOperation({ summary: 'Search and list products' })
   async findAll(@Query() query: QueryProductDto) {
     return this.productsService.findAll(query);
+  }
+
+  @Get('search')
+  @Public()
+  @ApiOperation({ summary: 'Search products by distance or administrative boundaries' })
+  async search(@Query() query: SearchProductsDto) {
+    return this.productsService.search(query);
   }
 
   @Get('my-products')
@@ -75,9 +78,9 @@ export class ProductsController {
   async updateStatus(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
-    @Body('status') status: ProductStatus,
+    @Body() dto: UpdateProductStatusDto,
   ) {
-    return this.productsService.updateStatus(id, userId, status);
+    return this.productsService.updateStatus(id, userId, dto.status);
   }
 
   @Delete(':id')

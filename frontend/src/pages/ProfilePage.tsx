@@ -22,6 +22,7 @@ import {
   Save,
   Settings,
   ShieldCheck,
+  ShieldAlert,
   ShoppingBag,
   Star,
   Store,
@@ -230,6 +231,18 @@ export default function ProfilePage() {
 
       <section className="glass-card overflow-hidden rounded-xl">
         <nav className="flex flex-col">
+          {profile?.role === 'ADMIN' && (
+            <Link
+              to="/admin"
+              className="group flex items-center justify-between p-md transition-colors hover:bg-surface-container-low md:p-lg md:px-xl border-b border-outline-variant/40"
+            >
+              <span className="flex items-center gap-md text-on-surface md:gap-lg md:text-lg">
+                <ShieldAlert className="text-on-surface-variant transition-colors group-hover:text-primary" size={26} />
+                Quản lý hệ thống (Admin)
+              </span>
+              <ChevronRight className="text-on-surface-variant transition-transform group-hover:translate-x-1" size={26} />
+            </Link>
+          )}
           {[
             { label: 'Tin đăng của tôi', Icon: List },
             { label: 'Sản phẩm đã lưu', Icon: Bookmark },

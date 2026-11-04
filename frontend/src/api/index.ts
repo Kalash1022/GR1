@@ -1,5 +1,5 @@
 import api from './client'
-import type { AuthResponse, User, Product, PaginatedResponse, Category } from '../types'
+import type { AuthResponse, User, Product, PaginatedResponse, Category, Report } from '../types'
 
 // Auth
 export const authApi = {
@@ -13,12 +13,16 @@ export const authApi = {
 export const usersApi = {
   getProfile: () => api.get<User>('/users/me'),
   updateProfile: (data: Partial<User>) => api.patch<User>('/users/me', data),
+  getAll: () => api.get<User[]>('/users'),
+  toggleActive: (id: string) => api.patch<User>(`/users/${id}/toggle-active`),
 }
 
 // Products
 export const productsApi = {
   getAll: (params?: Record<string, any>) =>
     api.get<PaginatedResponse<Product>>('/products', { params }),
+  search: (params?: Record<string, any>) =>
+    api.get<PaginatedResponse<Product>>('/products/search', { params }),
   getById: (id: string) => api.get<Product>(`/products/${id}`),
   getMyProducts: () => api.get<Product[]>('/products/my-products'),
   create: (data: any) => api.post<Product>('/products', data),
@@ -31,6 +35,7 @@ export const productsApi = {
 // Categories
 export const categoriesApi = {
   getAll: () => api.get<Category[]>('/categories'),
+  getById: (id: string) => api.get<Category>(`/categories/${id}`),
 }
 
 // Messages
@@ -39,6 +44,7 @@ export const messagesApi = {
     api.post('/messages', data),
   getConversationList: () => api.get('/messages'),
   getConversation: (userId: string) => api.get(`/messages/${userId}`),
+  markAsRead: (senderId: string) => api.patch(`/messages/${senderId}/read`),
 }
 
 // Reports
@@ -49,4 +55,7 @@ export const reportsApi = {
     targetUserId?: string
     targetProductId?: string
   }) => api.post('/reports', data),
+  getAll: (status?: string) => api.get<Report[]>('/reports', { params: { status } }),
+  handle: (id: string, data: { status: string; blockUser?: boolean; blockProduct?: boolean }) =>
+    api.patch(`/reports/${id}/handle`, data),
 }

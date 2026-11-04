@@ -77,6 +77,9 @@ export class UsersService {
         id: true,
         name: true,
         email: true,
+        phone: true,
+        address: true,
+        avatar: true,
         role: true,
         isActive: true,
         createdAt: true,
@@ -93,9 +96,27 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return this.prisma.user.update({
+
+    const newIsActive = !user.isActive;
+
+    // Update user active status
+    const updatedUser = await this.prisma.user.update({
       where: { id },
-      data: { isActive: !user.isActive },
+      data: { isActive: newIsActive },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        address: true,
+        avatar: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        _count: { select: { products: true } },
+      },
     });
+
+    return updatedUser;
   }
 }

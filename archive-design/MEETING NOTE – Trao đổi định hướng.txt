@@ -1,0 +1,76 @@
+MEETING NOTE – Trao đổi định hướng đồ án GR1
+
+Đề tài hiện tại: Xây dựng nền tảng chợ thương mại điện tử
+
+Thời gian: 15/3/2026
+
+
+1. Nội dung trao đổi
+
+Trong buổi họp, giáo viên góp ý rằng đề tài có thể mở rộng vượt ra ngoài mô hình website thương mại điện tử cơ bản, hướng đến một nền tảng có khả năng phát triển lâu dài cho GR2 và đồ án tốt nghiệp.
+
+Các nội dung chính được thảo luận:
+
+- Hệ thống cần hỗ trợ quy mô lớn (có khả năng mở rộng cho hàng triệu người dùng), do đó thiết kế từ giai đoạn đầu cần tính đến khả năng mở rộng dữ liệu và chức năng.
+- Sản phẩm nên có nhiều thuộc tính chi tiết hơn để phục vụ tìm kiếm nâng cao, ví dụ:
+  + danh mục
+  + tình trạng
+  + thuộc tính riêng của từng loại sản phẩm
+  + vị trí/địa chỉ
+- Bổ sung chức năng tìm kiếm theo vị trí để hỗ trợ hiển thị sản phẩm gần người dùng, ví dụ trong bán kính 5km.
+- Với trường hợp người dùng nhập nhiều điều kiện tìm kiếm, hệ thống cần có khả năng trả về kết quả gần đúng nếu không có kết quả khớp hoàn toàn.
+- Với trường hợp người dùng mới hoặc tìm kiếm ít điều kiện, hệ thống cần có chức năng gợi ý sản phẩm.
+
+Giáo viên định hướng áp dụng các phương pháp recommendation gồm:
+- Content-based filtering
+- Collaborative filtering
+- Gợi ý sản phẩm mới phù hợp nhu cầu tiềm ẩn của người dùng
+
+Ngoài chức năng mua bán, hệ thống có thể mở rộng thêm:
+- Trao đổi đồ giữa người dùng
+- Matching người dùng để trao đổi dựa trên hồ sơ hoặc sản phẩm
+- Kết nối cho tặng miễn phí nhằm tạo giá trị xã hội
+- Hệ thống chatbot hỗ trợ người dùng (ở giai đoạn sau)
+
+Về quản trị:
+- Admin không tập trung duyệt từng sản phẩm/đơn hàng
+- Thay vào đó tập trung xử lý report
+- Cần cơ chế lưu vết report của user và sản phẩm
+- Nếu một user hoặc sản phẩm bị report nhiều lần sẽ bị tạm khóa để xử lý
+
+2. Định hướng thực hiện
+
+Giáo viên đề xuất chia đề tài thành 3 giai đoạn:
+
+GR1:
+- Hoàn thiện phiên bản sơ bộ nhưng đầy đủ chức năng chính
+- Thiết kế dữ liệu
+- Use Case
+- Đặc tả luồng xử lý
+- Recommendation mức cơ bản
+- Tìm kiếm theo vị trí
+- Report management
+
+GR2:
+- Mở rộng chatbot
+- Tối ưu khả năng mở rộng hệ thống
+- Nghiên cứu nâng cao recommendation
+- Cần làm việc theo nhóm
+
+Đồ án tốt nghiệp:
+- Triển khai hệ thống thực tế
+- Deploy và kiểm thử
+
+3. Công việc tiếp theo
+
+- Sinh viên cập nhật lại mô hình hệ thống theo hướng mở rộng
+- Hoàn thiện tài liệu đặc tả cho các use case chính
+- Bổ sung thiết kế cơ sở dữ liệu cho:
+  + recommendation
+  + location
+  + exchange
+  + report tracking
+- Trong vòng 2–3 ngày tới sẽ xác nhận lại với giáo viên:
+  + tiếp tục theo định hướng mở rộng hiện tại
+  hoặc
+  + điều chỉnh phạm vi đề tài nếu cần

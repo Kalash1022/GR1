@@ -1,8 +1,15 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import {
+  PrismaClient,
+  UserRole,
+  ExchangeType,
+  ReportReason,
+  ReportStatus,
+} from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcrypt';
 import 'dotenv/config';
+import { buildProductSeedData } from './product-data';
 
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
@@ -10,206 +17,392 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log('🌱 Seeding database...');
+  console.log('🌱 Starting database seeding...');
 
-  // Create categories
-  const categories = await Promise.all([
-    prisma.category.upsert({
-      where: { slug: 'electronics' },
-      update: {},
-      create: { name: 'Electronics', slug: 'electronics', icon: '📱' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'fashion' },
-      update: {},
-      create: { name: 'Fashion', slug: 'fashion', icon: '👗' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'furniture' },
-      update: {},
-      create: { name: 'Furniture', slug: 'furniture', icon: '🪑' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'books' },
-      update: {},
-      create: { name: 'Books', slug: 'books', icon: '📚' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'sports' },
-      update: {},
-      create: { name: 'Sports', slug: 'sports', icon: '⚽' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'vehicles' },
-      update: {},
-      create: { name: 'Vehicles', slug: 'vehicles', icon: '🚗' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'home-appliances' },
-      update: {},
-      create: { name: 'Home Appliances', slug: 'home-appliances', icon: '🏠' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'toys' },
-      update: {},
-      create: { name: 'Toys & Games', slug: 'toys', icon: '🧸' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'music' },
-      update: {},
-      create: { name: 'Musical Instruments', slug: 'music', icon: '🎸' },
-    }),
-    prisma.category.upsert({
-      where: { slug: 'other' },
-      update: {},
-      create: { name: 'Other', slug: 'other', icon: '📦' },
-    }),
-  ]);
+  // 1. Clean up existing data to allow re-seeding
+  console.log('🧹 Cleaning up old database entries...');
+  await prisma.exchangeRequest.deleteMany();
+  await prisma.message.deleteMany();
+  await prisma.report.deleteMany();
+  await prisma.location.deleteMany();
+  await prisma.productImage.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.category.deleteMany();
+  console.log('✅ Clean up completed.');
 
-  console.log(`✅ Created ${categories.length} categories`);
+  // 2. Create Categories
+  console.log('📦 Seeding categories...');
+  const categoriesData = [
+    {
+      name: 'Electronics', slug: 'electronics', icon: '📱',
+      formSchema: [
+        { name: 'brand', label: 'Thương hiệu', type: 'string', required: true },
+        { name: 'warranty', label: 'Bảo hành (tháng)', type: 'number', required: false },
+      ]
+    },
+    {
+      name: 'Fashion', slug: 'fashion', icon: '👗',
+      formSchema: [
+        { name: 'size', label: 'Kích cỡ', type: 'select', options: ['S', 'M', 'L', 'XL'], required: true },
+        { name: 'material', label: 'Chất liệu', type: 'string', required: false },
+      ]
+    },
+    { name: 'Furniture', slug: 'furniture', icon: '🪑' },
+    {
+      name: 'Books', slug: 'books', icon: '📚',
+      formSchema: [
+        { name: 'author', label: 'Tác giả', type: 'string', required: true },
+        { name: 'publisher', label: 'Nhà xuất bản', type: 'string', required: false },
+      ]
+    },
+    { name: 'Sports', slug: 'sports', icon: '⚽' },
+    { name: 'Vehicles', slug: 'vehicles', icon: '🚗' },
+    { name: 'Home Appliances', slug: 'home-appliances', icon: '🏠' },
+    { name: 'Toys & Games', slug: 'toys', icon: '🧸' },
+    { name: 'Musical Instruments', slug: 'music', icon: '🎸' },
+    { name: 'Other', slug: 'other', icon: '📦' },
+  ];
 
-  // Create admin user
-  const adminPassword = await bcrypt.hash('admin123', 10);
-  const admin = await prisma.user.upsert({
-    where: { email: 'admin@secondhand.com' },
-    update: {},
-    create: {
+  const categories = await Promise.all(
+    categoriesData.map((cat) =>
+      prisma.category.create({
+        data: cat,
+      })
+    )
+  );
+  console.log(`✅ Created ${categories.length} categories.`);
+
+  // Helper map to quickly get category IDs by slug
+  const categoryMap = new Map(categories.map((c) => [c.slug, c.id]));
+
+  // 3. Create Users (Admin, Providers, Seekers)
+  console.log('👥 Seeding users...');
+  const defaultPasswordHash = await bcrypt.hash('password123', 10);
+  const adminPasswordHash = await bcrypt.hash('admin123', 10);
+
+  // Admin
+  const admin = await prisma.user.create({
+    data: {
       email: 'admin@secondhand.com',
-      password: adminPassword,
-      name: 'Admin',
+      password: adminPasswordHash,
+      name: 'System Admin',
+      phone: '0900000000',
+      address: 'Hà Nội',
       role: UserRole.ADMIN,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
     },
   });
-  console.log(`✅ Admin user created: ${admin.email}`);
 
-  // Create sample provider
-  const providerPassword = await bcrypt.hash('provider123', 10);
-  const provider = await prisma.user.upsert({
-    where: { email: 'provider@example.com' },
-    update: {},
-    create: {
-      email: 'provider@example.com',
-      password: providerPassword,
-      name: 'Nguyen Van A',
-      phone: '0901234567',
-      address: 'Ho Chi Minh City',
+  // Providers (Sellers)
+  const sellersData = [
+    {
+      email: 'seller1@example.com',
+      password: defaultPasswordHash,
+      name: 'Nguyễn Văn Minh',
+      phone: '0912345678',
+      address: 'Quận 1, TP. Hồ Chí Minh',
       role: UserRole.PROVIDER,
-    },
-  });
-  console.log(`✅ Provider user created: ${provider.email}`);
-
-  // Create sample seeker
-  const seekerPassword = await bcrypt.hash('seeker123', 10);
-  const seeker = await prisma.user.upsert({
-    where: { email: 'seeker@example.com' },
-    update: {},
-    create: {
-      email: 'seeker@example.com',
-      password: seekerPassword,
-      name: 'Tran Thi B',
-      phone: '0909876543',
-      address: 'Hanoi',
-      role: UserRole.SEEKER,
-    },
-  });
-  console.log(`✅ Seeker user created: ${seeker.email}`);
-
-  // Create sample products
-  const sampleProducts = [
-    {
-      title: 'iPhone 14 Pro Max - Like New',
-      description: 'Used for 6 months, battery health 98%. Comes with original box and accessories.',
-      price: 22000000,
-      condition: 'LIKE_NEW' as const,
-      type: 'SELL' as const,
-      categorySlug: 'electronics',
-      location: { address: 'District 1, Ho Chi Minh City', latitude: 10.7769, longitude: 106.7009 },
-      images: ['https://images.unsplash.com/photo-1678685888221-cda773a3dcdb?w=600'],
+      avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=150',
     },
     {
-      title: 'IKEA Standing Desk - Adjustable Height',
-      description: 'Electric standing desk, 120x60cm. Perfect working condition.',
-      price: 3500000,
-      condition: 'GOOD' as const,
-      type: 'SELL' as const,
-      categorySlug: 'furniture',
-      location: { address: 'Thu Duc City, Ho Chi Minh City', latitude: 10.8510, longitude: 106.7720 },
-      images: ['https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=600'],
+      email: 'seller2@example.com',
+      password: defaultPasswordHash,
+      name: 'Trần Thị Thanh Vân',
+      phone: '0987654321',
+      address: 'Cầu Giấy, Hà Nội',
+      role: UserRole.PROVIDER,
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
     },
     {
-      title: 'Collection of Programming Books',
-      description: 'Clean Code, Design Patterns, and DDIA. All in great condition.',
-      price: null,
-      condition: 'GOOD' as const,
-      type: 'DONATE' as const,
-      categorySlug: 'books',
-      location: { address: 'Cau Giay, Hanoi', latitude: 21.0381, longitude: 105.7723 },
-      images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600'],
+      email: 'seller3@example.com',
+      password: defaultPasswordHash,
+      name: 'Lê Hoàng Long',
+      phone: '0905123456',
+      address: 'Hải Châu, Đà Nẵng',
+      role: UserRole.PROVIDER,
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
     },
     {
-      title: 'Mountain Bike - Swap for Road Bike',
-      description: 'Looking to exchange my mountain bike for a road bike of similar value.',
-      price: null,
-      condition: 'FAIR' as const,
-      type: 'EXCHANGE' as const,
-      categorySlug: 'sports',
-      location: { address: 'District 7, Ho Chi Minh City', latitude: 10.7340, longitude: 106.7218 },
-      images: ['https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600'],
+      email: 'seller4@example.com',
+      password: defaultPasswordHash,
+      name: 'Phạm Thanh Sơn',
+      phone: '0945678901',
+      address: 'Quận Bình Thạnh, TP. Hồ Chí Minh',
+      role: UserRole.PROVIDER,
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
     },
     {
-      title: 'Samsung Galaxy Tab S9 FE',
-      description: 'Excellent condition, comes with S Pen and keyboard cover.',
-      price: 8500000,
-      condition: 'LIKE_NEW' as const,
-      type: 'SELL' as const,
-      categorySlug: 'electronics',
-      location: { address: 'Ba Dinh, Hanoi', latitude: 21.0362, longitude: 105.8341 },
-      images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600'],
+      email: 'seller5@example.com',
+      password: defaultPasswordHash,
+      name: 'Vũ Minh Anh',
+      phone: '0956789012',
+      address: 'Quận Tây Hồ, Hà Nội',
+      role: UserRole.PROVIDER,
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
     },
     {
-      title: 'Vintage Acoustic Guitar',
-      description: 'Yamaha FG-180, great sound. Minor cosmetic wear.',
-      price: 2000000,
-      condition: 'FAIR' as const,
-      type: 'SELL' as const,
-      categorySlug: 'music',
-      location: { address: 'District 3, Ho Chi Minh City', latitude: 10.7831, longitude: 106.6867 },
-      images: ['https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600'],
+      email: 'lequangloi06032005@gmail.com',
+      password: defaultPasswordHash,
+      name: 'Lê Quang Lợi',
+      phone: '0912345679',
+      address: 'Quận 1, TP. Hồ Chí Minh',
+      role: UserRole.PROVIDER,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
     },
   ];
 
-  for (const product of sampleProducts) {
-    const category = categories.find(
-      (c) => c.slug === product.categorySlug,
-    );
-    if (!category) continue;
+  const sellers = await Promise.all(
+    sellersData.map((s) => prisma.user.create({ data: s }))
+  );
 
-    await prisma.product.create({
+  // Seekers (Buyers / Swappers)
+  const buyersData = [
+    {
+      email: 'buyer1@example.com',
+      password: defaultPasswordHash,
+      name: 'Phạm Minh Đức',
+      phone: '0933445566',
+      address: 'Quận 7, TP. Hồ Chí Minh',
+      role: UserRole.SEEKER,
+      avatar: 'https://images.unsplash.com/photo-1628157582853-a796fa650a6a?w=150',
+    },
+    {
+      email: 'buyer2@example.com',
+      password: defaultPasswordHash,
+      name: 'Nguyễn Thu Trang',
+      phone: '0966778899',
+      address: 'Đống Đa, Hà Nội',
+      role: UserRole.SEEKER,
+      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150',
+    },
+    {
+      email: 'buyer3@example.com',
+      password: defaultPasswordHash,
+      name: 'Đỗ Quốc Anh',
+      phone: '0977889900',
+      address: 'Ninh Kiều, Cần Thơ',
+      role: UserRole.SEEKER,
+      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
+    },
+    {
+      email: 'buyer4@example.com',
+      password: defaultPasswordHash,
+      name: 'Lâm Khánh Chi',
+      phone: '0988112233',
+      address: 'Quận 3, TP. Hồ Chí Minh',
+      role: UserRole.SEEKER,
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    },
+    {
+      email: 'buyer5@example.com',
+      password: defaultPasswordHash,
+      name: 'Hoàng Quốc Việt',
+      phone: '0977223344',
+      address: 'Quận Cầu Giấy, Hà Nội',
+      role: UserRole.SEEKER,
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+    },
+  ];
+
+  const buyers = await Promise.all(
+    buyersData.map((b) => prisma.user.create({ data: b }))
+  );
+
+  console.log(`✅ Created admin and ${sellers.length + buyers.length} users.`);
+
+  // Create User Preferences
+  console.log('⚙️ Seeding user preferences...');
+  const allUsers = [...sellers, ...buyers, admin];
+  for (const u of allUsers) {
+    const preferredCatIds = [
+      categories[Math.floor(Math.random() * categories.length)].id,
+      categories[Math.floor(Math.random() * categories.length)].id,
+    ];
+    await prisma.userPreference.create({
       data: {
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        condition: product.condition,
-        type: product.type,
-        ownerId: provider.id,
-        categoryId: category.id,
-        images: {
-          create: product.images.map((url) => ({ url })),
-        },
-        location: {
-          create: product.location,
-        },
+        userId: u.id,
+        preferredCategories: Array.from(new Set(preferredCatIds)),
+        preferredLocations: u.address ? [u.address] : [],
+        preferredTypes: [ExchangeType.SELL, ExchangeType.EXCHANGE],
+        priceRangeMin: 0,
+        priceRangeMax: 50000000,
       },
     });
   }
-  console.log(`✅ Created ${sampleProducts.length} sample products`);
+  console.log('✅ Created user preferences.');
 
-  console.log('🎉 Seed completed!');
+  // 4. Create Products
+  console.log('🛍️ Seeding products...');
+
+  const productsData = buildProductSeedData();
+
+  // Helper for admin boundary in seed
+  const getAdminBoundary = (address: string) => {
+    if (address.includes('Quận 1')) return { provinceId: 'hcm', districtId: 'hcm-q1' };
+    if (address.includes('Bình Thạnh')) return { provinceId: 'hcm', districtId: 'hcm-bt' };
+    if (address.includes('Cầu Giấy')) return { provinceId: 'hn', districtId: 'hn-cg' };
+    if (address.includes('Đống Đa')) return { provinceId: 'hn', districtId: 'hn-dd' };
+    if (address.includes('Ninh Kiều')) return { provinceId: 'ct', districtId: 'ct-nk' };
+    if (address.includes('Hải Châu')) return { provinceId: 'dn', districtId: 'dn-hc' };
+    return { provinceId: null, districtId: null };
+  };
+
+  // Insert products and link user and category
+  const dbUsers = [...sellers, ...buyers, admin];
+  const userMap = new Map(dbUsers.map((u) => [u.email, u.id]));
+
+  const createdProducts = [];
+
+  for (const prod of productsData) {
+    const categoryId = categoryMap.get(prod.categorySlug);
+    const ownerId = userMap.get(prod.ownerEmail);
+
+    if (!categoryId || !ownerId) {
+      console.warn(`⚠️ Skipped product "${prod.title}" because category or owner was not found.`);
+      continue;
+    }
+
+    const boundary = getAdminBoundary(prod.location.address);
+
+    const createdProduct = await prisma.product.create({
+      data: {
+        title: prod.title,
+        description: prod.description,
+        price: prod.price,
+        condition: prod.condition,
+        type: prod.type,
+        status: prod.status,
+        ownerId: ownerId,
+        categories: { connect: [{ id: categoryId }] },
+        images: {
+          create: prod.images.map((url: string) => ({ url })),
+        },
+        location: {
+          create: {
+            address: prod.location.address,
+            latitude: prod.location.latitude,
+            longitude: prod.location.longitude,
+            provinceId: boundary.provinceId,
+            districtId: boundary.districtId,
+          },
+        },
+      },
+    });
+
+    if (prod.location.latitude && prod.location.longitude) {
+      await prisma.$executeRawUnsafe(
+        `UPDATE locations SET location = ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography WHERE "productId" = $3`,
+        prod.location.longitude,
+        prod.location.latitude,
+        createdProduct.id
+      );
+    }
+
+    createdProducts.push(createdProduct);
+  }
+
+  console.log(`✅ Created ${createdProducts.length} sample products.`);
+
+  // 5. Create Sample Messages
+  console.log('💬 Seeding messages...');
+  const buyer1Id = userMap.get('buyer1@example.com')!;
+  const seller1Id = userMap.get('seller1@example.com')!;
+  const buyer2Id = userMap.get('buyer2@example.com')!;
+  const seller2Id = userMap.get('seller2@example.com')!;
+  const buyer3Id = userMap.get('buyer3@example.com')!;
+
+  const messagesData = [
+    {
+      senderId: buyer1Id,
+      receiverId: seller1Id,
+      content: 'Chào anh Minh, chiếc iPhone Pro 256GB còn fix thêm chút lộc lá nào không ạ?',
+      createdAt: new Date(Date.now() - 4 * 3600000), // 4 hours ago
+    },
+    {
+      senderId: seller1Id,
+      receiverId: buyer1Id,
+      content: 'Chào bạn Đức, nếu bạn qua lấy trực tiếp mình bớt 200k tiền xăng xe nhé!',
+      createdAt: new Date(Date.now() - 3.5 * 3600000),
+    },
+    {
+      senderId: buyer1Id,
+      receiverId: seller1Id,
+      content: 'Dạ tối nay tầm 7h em qua xem máy ở Quận 1 được không anh?',
+      createdAt: new Date(Date.now() - 3 * 3600000),
+    },
+    {
+      senderId: seller1Id,
+      receiverId: buyer1Id,
+      content: 'Ok bạn, tới nơi gọi điện thoại mình dắt vào nhà xem máy nhé.',
+      createdAt: new Date(Date.now() - 2.5 * 3600000),
+    },
+
+    // Thread 2
+    {
+      senderId: buyer2Id,
+      receiverId: seller2Id,
+      content: 'Chị Vân ơi, bàn phím cơ compact này có sẵn đầu thu USB không ạ?',
+      createdAt: new Date(Date.now() - 2 * 3600000),
+    },
+    {
+      senderId: seller2Id,
+      receiverId: buyer2Id,
+      content: 'Bàn phím này dùng kết nối Bluetooth hoặc cắm cáp Type-C trực tiếp em nha, không dùng đầu thu USB 2.4 GHz.',
+      createdAt: new Date(Date.now() - 1.8 * 3600000),
+    },
+  ];
+
+  for (const msg of messagesData) {
+    await prisma.message.create({
+      data: msg,
+    });
+  }
+  console.log('✅ Created sample messages.');
+
+  // 6. Create Exchange Request
+  console.log('🔄 Seeding exchange requests...');
+  // Find products for exchange
+  const fixedGearBike = createdProducts.find((p) => p.title.includes('Xe đạp fixed gear khung trắng'));
+  const compactKeyboard = createdProducts.find((p) => p.title.includes('Bàn phím cơ compact LED RGB'));
+
+  if (fixedGearBike && compactKeyboard) {
+    await prisma.exchangeRequest.create({
+      data: {
+        message: 'Chào bạn, mình muốn đổi chiếc xe đạp fixed gear lấy bàn phím cơ compact của bạn được không? Mình có thể bù thêm chút tiền nếu cần.',
+        status: 'PENDING',
+        requesterId: buyer1Id, // Owner of the fixed-gear bicycle
+        receiverId: seller2Id, // Owner of the compact keyboard
+        offeredProductId: fixedGearBike.id,
+        wantedProductId: compactKeyboard.id,
+      },
+    });
+    console.log('✅ Created a sample exchange request.');
+  }
+
+  // 7. Create Sample Reports
+  console.log('🚨 Seeding sample reports...');
+  const spamProduct = createdProducts[0]; // iPhone Pro
+  if (spamProduct) {
+    await prisma.report.create({
+      data: {
+        reason: ReportReason.SPAM,
+        details: 'Tài khoản đăng bán quá nhiều sản phẩm trùng lặp trong thời gian ngắn.',
+        status: ReportStatus.PENDING,
+        reporterId: buyer3Id,
+        targetUserId: seller1Id,
+        targetProductId: spamProduct.id,
+      },
+    });
+    console.log('✅ Created a sample report.');
+  }
+
+  console.log('🎉 Seeding database successfully completed!');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('❌ Error seeding database:', e);
     process.exit(1);
   })
   .finally(async () => {

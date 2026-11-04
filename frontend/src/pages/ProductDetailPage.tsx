@@ -21,6 +21,7 @@ import {
   Share2,
   ShieldAlert,
   Star,
+  Tag,
   User,
 } from 'lucide-react'
 
@@ -56,16 +57,18 @@ export default function ProductDetailPage() {
     enabled: !!id,
   })
 
+  const primaryCategory = product?.categories?.[0]
+
   const { data: similarProducts } = useQuery({
-    queryKey: ['similar-products', product?.categoryId, product?.id],
+    queryKey: ['similar-products', primaryCategory?.id, product?.id],
     queryFn: async () => {
       const { data } = await productsApi.getAll({
-        categoryId: product!.categoryId,
+        categoryId: primaryCategory!.id,
         limit: 5,
       })
       return data.data.filter((item) => item.id !== product!.id).slice(0, 5)
     },
-    enabled: !!product?.categoryId,
+    enabled: !!primaryCategory?.id,
   })
 
   const messageMutation = useMutation({
@@ -250,6 +253,22 @@ export default function ProductDetailPage() {
                 </span>
               )}
             </div>
+
+            {/* Categories breadcrumbs */}
+            {product.categories && product.categories.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {product.categories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`/products?category=${cat.id}`}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-surface-container-low px-3 py-1 text-xs font-bold text-on-surface-variant transition-colors hover:bg-primary/10 hover:text-primary"
+                  >
+                    {cat.icon && <span>{cat.icon}</span>}
+                    {cat.name}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
           {!isOwner && (
@@ -300,7 +319,23 @@ export default function ProductDetailPage() {
                 </div>
               )}
             </div>
-            <ChevronRight className="text-outline" size={22} />
+            <div className="flex shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!currentUser) {
+                    toast.error('Vui lòng đăng nhập')
+                    navigate('/login')
+                  } else {
+                    navigate(`/chat/${product.ownerId}`)
+                  }
+                }}
+                className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 font-bold text-primary transition-colors hover:bg-primary/20"
+              >
+                <MessageCircle size={18} />
+                Nhắn tin
+              </button>
+            </div>
           </div>
 
           <div className="space-y-md">
@@ -311,6 +346,49 @@ export default function ProductDetailPage() {
               {product.description}
             </p>
           </div>
+
+          {/* Attributes / Specs Table */}
+          {product.attributes && Object.keys(product.attributes).length > 0 && (
+            <div className="space-y-md">
+              <h2 className="border-l-4 border-secondary pl-3 font-headline-md text-headline-md text-on-surface">
+                Thông số kỹ thuật
+              </h2>
+              <div className="overflow-hidden rounded-xl border border-outline-variant/40">
+                {Object.entries(product.attributes).map(([key, value], index) => (
+                  <div
+                    key={key}
+                    className={`flex items-center gap-4 px-4 py-3 text-sm ${
+                      index % 2 === 0 ? 'bg-surface-container-low' : 'bg-surface-container-lowest'
+                    }`}
+                  >
+                    <span className="w-1/3 shrink-0 font-bold text-on-surface-variant capitalize">{key}</span>
+                    <span className="text-on-surface">{String(value)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tags */}
+          {product.tags && product.tags.length > 0 && (
+            <div className="space-y-md">
+              <h2 className="border-l-4 border-primary pl-3 font-headline-md text-headline-md text-on-surface">
+                Tags
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {product.tags.map((t) => (
+                  <Link
+                    key={t.id}
+                    to={`/products?tag=${encodeURIComponent(t.name)}`}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-primary/20"
+                  >
+                    <Tag size={12} />
+                    {t.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex items-start gap-md rounded-2xl border border-primary/10 bg-primary/5 p-md">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -368,7 +446,7 @@ export default function ProductDetailPage() {
         <section className="space-y-lg">
           <div className="flex items-center justify-between gap-3">
             <h2 className="font-headline-md text-headline-md text-on-surface">Sản phẩm tương tự</h2>
-            <Link to={`/products?category=${product.categoryId}`} className="text-sm font-bold text-primary hover:underline">
+            <Link to={`/products?category=${primaryCategory?.id ?? ''}`} className="text-sm font-bold text-primary hover:underline">
               Xem tất cả
             </Link>
           </div>
@@ -405,7 +483,14 @@ export default function ProductDetailPage() {
           <button
             type="button"
             className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-surface-container-high text-on-surface"
-            onClick={() => window.scrollTo({ top: 360, behavior: 'smooth' })}
+            onClick={() => {
+              if (!currentUser) {
+                toast.error('Vui lòng đăng nhập')
+                navigate('/login')
+              } else {
+                navigate(`/chat/${product.ownerId}`)
+              }
+            }}
             aria-label="Nhắn tin"
           >
             <MessageCircle size={25} />
@@ -413,7 +498,14 @@ export default function ProductDetailPage() {
           <button
             type="button"
             className="btn-primary h-14 flex-1"
-            onClick={() => window.scrollTo({ top: 360, behavior: 'smooth' })}
+            onClick={() => {
+              if (!currentUser) {
+                toast.error('Vui lòng đăng nhập')
+                navigate('/login')
+              } else {
+                navigate(`/chat/${product.ownerId}`)
+              }
+            }}
           >
             <CheckCircle size={20} />
             Liên hệ ngay

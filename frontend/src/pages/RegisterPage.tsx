@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { authApi } from '../api'
 import { toast } from 'react-hot-toast'
-import { User, Mail, Lock, Phone, MapPin, Loader, ArrowRight, Package, Search, ShoppingBag } from 'lucide-react'
+import { User, Mail, Lock, Phone, MapPin, Loader, ArrowRight, Package } from 'lucide-react'
 
 export default function RegisterPage() {
   const [name,     setName]     = useState('')
@@ -58,34 +58,6 @@ export default function RegisterPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Role Toggle */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold" style={{ color: 'var(--color-surface-400)' }}>
-                  I want to…
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { value: 'SEEKER',   label: 'Find & Buy',   Icon: Search,     desc: 'Browse and purchase items' },
-                    { value: 'PROVIDER', label: 'Sell & Give',  Icon: ShoppingBag, desc: 'List items for others' },
-                  ].map(({ value, label, Icon, desc }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setRole(value as any)}
-                      className="flex flex-col items-center gap-1 p-3 rounded-xl text-sm font-semibold transition-all"
-                      style={{
-                        background: role === value ? 'rgba(79,70,229,0.2)' : 'rgba(15,23,42,0.4)',
-                        border: `1px solid ${role === value ? 'rgba(129,140,248,0.4)' : 'rgba(148,163,184,0.1)'}`,
-                        color: role === value ? 'white' : 'var(--color-surface-500)',
-                      }}
-                    >
-                      <Icon size={18} color={role === value ? '#818cf8' : 'currentColor'} />
-                      <span>{label}</span>
-                      <span className="text-[10px] font-normal" style={{ color: 'var(--color-surface-600)' }}>{desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
 
               {/* Name */}
               <div className="space-y-1.5">

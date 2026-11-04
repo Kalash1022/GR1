@@ -2,7 +2,18 @@ import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { categoriesApi, productsApi } from '../api'
-import { ChevronLeft, ChevronRight, Inbox, LoaderCircle, MapPin, Search, SlidersHorizontal, Tag, X } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  Inbox,
+  LoaderCircle,
+  MapPin,
+  Search,
+  SlidersHorizontal,
+  Tag,
+  X,
+  Compass,
+} from 'lucide-react'
 
 const typeOptions = [
   { value: '', label: 'Tất cả' },
@@ -25,12 +36,71 @@ const conditionLabel = {
   POOR: 'Cũ',
 } as const
 
+const provinces = [
+  { value: '', label: 'Tất cả Tỉnh/Thành' },
+  { value: 'hcm', label: 'TP. Hồ Chí Minh' },
+  { value: 'hn', label: 'Hà Nội' },
+  { value: 'dn', label: 'Đà Nẵng' },
+  { value: 'ct', label: 'Cần Thơ' },
+]
+
+const districtsByProvince: Record<string, { value: string; label: string }[]> = {
+  hcm: [
+    { value: '', label: 'Tất cả Quận/Huyện' },
+    { value: 'hcm-q1', label: 'Quận 1' },
+    { value: 'hcm-bt', label: 'Quận Bình Thạnh' },
+  ],
+  hn: [
+    { value: '', label: 'Tất cả Quận/Huyện' },
+    { value: 'hn-cg', label: 'Quận Cầu Giấy' },
+    { value: 'hn-dd', label: 'Quận Đống Đa' },
+  ],
+  dn: [
+    { value: '', label: 'Tất cả Quận/Huyện' },
+    { value: 'dn-hc', label: 'Quận Hải Châu' },
+  ],
+  ct: [
+    { value: '', label: 'Tất cả Quận/Huyện' },
+    { value: 'ct-nk', label: 'Quận Ninh Kiều' },
+  ],
+}
+
+const radiusOptions = [
+  { value: 1, label: '1 km' },
+  { value: 3, label: '3 km' },
+  { value: 5, label: '5 km' },
+  { value: 10, label: '10 km' },
+  { value: 20, label: '20 km' },
+  { value: 50, label: '50 km' },
+]
+
 export default function ProductListPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [keyword, setKeyword] = useState(searchParams.get('keyword') ?? '')
   const [category, setCategory] = useState(searchParams.get('category') ?? '')
+  const [tag, setTag] = useState(searchParams.get('tag') ?? '')
   const [type, setType] = useState(searchParams.get('type') ?? '')
   const [page, setPage] = useState(Number(searchParams.get('page') ?? 1))
+
+  // Spatial search states
+  const [nearMe, setNearMe] = useState(searchParams.get('nearMe') === 'true')
+  const [lat, setLat] = useState<number | null>(
+    searchParams.get('lat') ? Number(searchParams.get('lat')) : null
+  )
+  const [lng, setLng] = useState<number | null>(
+    searchParams.get('lng') ? Number(searchParams.get('lng')) : null
+  )
+  const [radiusKm, setRadiusKm] = useState(
+    searchParams.get('radiusKm') ? Number(searchParams.get('radiusKm')) : 10
+  )
+
+  // Administrative boundary states
+  const [provinceId, setProvinceId] = useState(searchParams.get('provinceId') ?? '')
+  const [districtId, setDistrictId] = useState(searchParams.get('districtId') ?? '')
+
+  // Sorting
+  const [sort, setSort] = useState(searchParams.get('sort') ?? '')
+  const [isLocating, setIsLocating] = useState(false)
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -41,12 +111,46 @@ export default function ProductListPage() {
   })
 
   const { data: productsData, isLoading } = useQuery({
-    queryKey: ['products', keyword, category, type, page],
+    queryKey: [
+      'products-search',
+      keyword,
+      category,
+      tag,
+      type,
+      nearMe,
+      lat,
+      lng,
+      radiusKm,
+      provinceId,
+      districtId,
+      sort,
+      page,
+    ],
     queryFn: async () => {
-      const { data } = await productsApi.getAll({
+      if (nearMe && lat && lng) {
+        const { data } = await productsApi.search({
+          keyword: keyword || undefined,
+          categoryId: category || undefined,
+          tag: tag || undefined,
+          type: type || undefined,
+          lat,
+          lng,
+          radiusKm,
+          sort: sort || undefined,
+          page,
+          limit: 12,
+        })
+        return data
+      }
+
+      const { data } = await productsApi.search({
         keyword: keyword || undefined,
         categoryId: category || undefined,
+        tag: tag || undefined,
         type: type || undefined,
+        provinceId: provinceId || undefined,
+        districtId: districtId || undefined,
+        sort: sort || undefined,
         page,
         limit: 12,
       })
@@ -54,18 +158,26 @@ export default function ProductListPage() {
     },
   })
 
-  const syncParams = (next: { keyword?: string; category?: string; type?: string; page?: number }) => {
+  const syncParams = (next: Record<string, any>) => {
     const params = new URLSearchParams(searchParams)
     const values = {
       keyword,
       category,
+      tag,
       type,
+      nearMe: nearMe ? 'true' : 'false',
+      lat: lat ? String(lat) : '',
+      lng: lng ? String(lng) : '',
+      radiusKm: String(radiusKm),
+      provinceId,
+      districtId,
+      sort,
       page,
       ...next,
     }
 
     Object.entries(values).forEach(([key, value]) => {
-      if (!value || value === 1) {
+      if (!value || value === 'false' || value === 1 || (key === 'radiusKm' && value === '10')) {
         params.delete(key)
       } else {
         params.set(key, String(value))
@@ -93,15 +205,101 @@ export default function ProductListPage() {
     syncParams({ type: value, page: 1 })
   }
 
+  const handleProvinceChange = (value: string) => {
+    setProvinceId(value)
+    setDistrictId('')
+    setPage(1)
+    syncParams({ provinceId: value, districtId: '', page: 1 })
+  }
+
+  const handleDistrictChange = (value: string) => {
+    setDistrictId(value)
+    setPage(1)
+    syncParams({ districtId: value, page: 1 })
+  }
+
+  const handleRadiusChange = (value: number) => {
+    setRadiusKm(value)
+    setPage(1)
+    syncParams({ radiusKm: value, page: 1 })
+  }
+
+  const handleSortChange = (value: string) => {
+    setSort(value)
+    setPage(1)
+    syncParams({ sort: value, page: 1 })
+  }
+
   const handlePageChange = (value: number) => {
     setPage(value)
     syncParams({ page: value })
   }
 
+  const handleNearMeChange = (checked: boolean) => {
+    setNearMe(checked)
+    setPage(1)
+    if (checked) {
+      setIsLocating(true)
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setIsLocating(false)
+          const newLat = position.coords.latitude
+          const newLng = position.coords.longitude
+          setLat(newLat)
+          setLng(newLng)
+          setSort('distance') // default sort by distance when GPS is on
+          setProvinceId('')
+          setDistrictId('')
+          syncParams({
+            nearMe: 'true',
+            lat: String(newLat),
+            lng: String(newLng),
+            sort: 'distance',
+            provinceId: '',
+            districtId: '',
+            page: 1,
+          })
+        },
+        (error) => {
+          setIsLocating(false)
+          setNearMe(false)
+          setLat(null)
+          setLng(null)
+          let errMsg = 'Không thể lấy vị trí hiện tại của bạn.'
+          if (error.code === error.PERMISSION_DENIED) {
+            errMsg = 'Quyền định vị bị từ chối. Vui lòng cho phép quyền truy cập vị trí trên trình duyệt.'
+          }
+          alert(errMsg)
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      )
+    } else {
+      setLat(null)
+      setLng(null)
+      const nextSort = sort === 'distance' ? '' : sort
+      setSort(nextSort)
+      syncParams({
+        nearMe: 'false',
+        lat: '',
+        lng: '',
+        sort: nextSort,
+        page: 1,
+      })
+    }
+  }
+
   const clearFilters = () => {
     setKeyword('')
     setCategory('')
+    setTag('')
     setType('')
+    setNearMe(false)
+    setLat(null)
+    setLng(null)
+    setRadiusKm(10)
+    setProvinceId('')
+    setDistrictId('')
+    setSort('')
     setPage(1)
     setSearchParams({}, { replace: true })
   }
@@ -130,7 +328,7 @@ export default function ProductListPage() {
             <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={18} />
             <input
               type="text"
-              placeholder="Tìm sản phẩm, thương hiệu, khu vực..."
+              placeholder="Tìm sản phẩm, thương hiệu..."
               className="input-field h-12 pl-11"
               value={keyword}
               onChange={(event) => handleKeywordChange(event.target.value)}
@@ -141,7 +339,7 @@ export default function ProductListPage() {
             <label className="relative block">
               <SlidersHorizontal className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={17} />
               <select
-                className="input-field h-12 min-w-[210px] appearance-none pl-11 pr-9"
+                className="input-field h-12 min-w-[200px] appearance-none pl-11 pr-9"
                 value={category}
                 onChange={(event) => handleCategoryChange(event.target.value)}
               >
@@ -173,12 +371,138 @@ export default function ProductListPage() {
           </div>
         </div>
 
-        {(keyword || category || type) && (
+        {/* Spatial Search and Filters Row */}
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 md:grid-cols-4 items-center">
+          {/* Near me toggle */}
+          <button
+            type="button"
+            onClick={() => handleNearMeChange(!nearMe)}
+            disabled={isLocating}
+            className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl border font-bold transition-all ${
+              nearMe
+                ? 'border-primary/40 bg-primary/10 text-primary shadow-sm ring-1 ring-primary/30'
+                : 'border-outline-variant hover:bg-surface-container-high text-on-surface-variant'
+            }`}
+          >
+            {isLocating ? (
+              <LoaderCircle className="animate-spin text-primary" size={18} />
+            ) : (
+              <Compass className={nearMe ? 'text-primary animate-pulse' : 'text-outline'} size={18} />
+            )}
+            {isLocating ? 'Đang định vị...' : 'Tìm gần tôi'}
+          </button>
+
+          {/* Near me Radius OR Admin boundary selectors */}
+          {nearMe ? (
+            <label className="relative block sm:col-span-1 md:col-span-2">
+              <Compass className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={17} />
+              <select
+                className="input-field h-12 appearance-none pl-11 pr-9"
+                value={radiusKm}
+                onChange={(event) => handleRadiusChange(Number(event.target.value))}
+              >
+                {radiusOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    Bán kính: {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <>
+              <label className="relative block">
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={17} />
+                <select
+                  className="input-field h-12 appearance-none pl-11 pr-9"
+                  value={provinceId}
+                  onChange={(event) => handleProvinceChange(event.target.value)}
+                >
+                  {provinces.map((prov) => (
+                    <option key={prov.value} value={prov.value}>
+                      {prov.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="relative block">
+                <MapPin className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={17} />
+                <select
+                  className="input-field h-12 appearance-none pl-11 pr-9"
+                  disabled={!provinceId}
+                  value={districtId}
+                  onChange={(event) => handleDistrictChange(event.target.value)}
+                >
+                  <option value="">Tất cả Quận/Huyện</option>
+                  {provinceId &&
+                    districtsByProvince[provinceId]?.map((dist) => (
+                      <option key={dist.value} value={dist.value}>
+                        {dist.label}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </>
+          )}
+
+          {/* Sắp xếp */}
+          <label className="relative block">
+            <SlidersHorizontal className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-outline" size={17} />
+            <select
+              className="input-field h-12 appearance-none pl-11 pr-9"
+              value={sort}
+              onChange={(event) => handleSortChange(event.target.value)}
+            >
+              <option value="">Sắp xếp: Mặc định</option>
+              <option value="newest">Mới nhất</option>
+              <option value="price_asc">Giá: Thấp đến Cao</option>
+              <option value="price_desc">Giá: Cao đến Thấp</option>
+              {nearMe && <option value="distance">Khoảng cách: Gần nhất</option>}
+            </select>
+          </label>
+        </div>
+
+        {(keyword || category || tag || type || nearMe || provinceId || districtId || sort) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-outline-variant/40 pt-4 text-body-sm text-on-surface-variant">
             <Tag size={15} className="text-primary" />
             {keyword && <span className="badge badge-exchange">"{keyword}"</span>}
             {category && <span className="badge badge-sell">Danh mục</span>}
+            {tag && (
+              <span className="badge bg-primary/10 text-primary">
+                Tag: {tag}
+                <button type="button" className="ml-1 opacity-70 hover:opacity-100" onClick={() => { setTag(''); syncParams({ tag: '', page: 1 }); setPage(1); }}>
+                  <X size={12} />
+                </button>
+              </span>
+            )}
             {type && <span className="badge badge-donate">{typeLabel[type as keyof typeof typeLabel]}</span>}
+            {nearMe && (
+              <span className="badge badge-sell flex items-center gap-1">
+                <Compass size={12} className="animate-spin" />
+                Gần tôi ({radiusKm}km)
+              </span>
+            )}
+            {provinceId && (
+              <span className="badge badge-exchange">
+                {provinces.find((p) => p.value === provinceId)?.label}
+              </span>
+            )}
+            {districtId && provinceId && (
+              <span className="badge badge-donate">
+                {districtsByProvince[provinceId]?.find((d) => d.value === districtId)?.label}
+              </span>
+            )}
+            {sort && (
+              <span className="badge badge-exchange">
+                {sort === 'distance'
+                  ? 'Gần nhất'
+                  : sort === 'newest'
+                    ? 'Mới nhất'
+                    : sort === 'price_asc'
+                      ? 'Giá tăng dần'
+                      : 'Giá giảm dần'}
+              </span>
+            )}
             <button
               type="button"
               className="ml-auto inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold text-error hover:bg-error-container/50"
@@ -195,7 +519,7 @@ export default function ProductListPage() {
         <div className="flex min-h-[360px] items-center justify-center">
           <div className="flex flex-col items-center gap-3 text-on-surface-variant">
             <LoaderCircle className="animate-spin text-primary" size={36} />
-            <span>Đang tải sản phẩm...</span>
+            <span>Đang tìm sản phẩm...</span>
           </div>
         </div>
       ) : productsData?.data && productsData.data.length > 0 ? (
@@ -251,7 +575,14 @@ export default function ProductListPage() {
                       {product.location && (
                         <p className="mt-2 flex items-center gap-1.5 truncate text-xs text-on-surface-variant">
                           <MapPin size={14} className="shrink-0 text-outline" />
-                          <span className="truncate">{product.location.address}</span>
+                          <span className="truncate">
+                            {product.location.address}
+                            {product.distanceKm !== undefined && (
+                              <span className="ml-1 text-primary font-bold">
+                                ({product.distanceKm} km)
+                              </span>
+                            )}
+                          </span>
                         </p>
                       )}
                     </div>

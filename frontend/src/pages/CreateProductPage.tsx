@@ -1,9 +1,20 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { categoriesApi, productsApi } from '../api'
-import { ArrowLeft, Camera, CheckCircle, ImagePlus, LoaderCircle, MapPin, Plus, Trash2, X } from 'lucide-react'
+import type { Category, FormFieldSchema } from '../types'
+import {
+  ArrowLeft,
+  Camera,
+  CheckCircle,
+  ImagePlus,
+  LoaderCircle,
+  MapPin,
+  Plus,
+  Tag,
+  X,
+} from 'lucide-react'
 
 type Condition = 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR' | 'POOR'
 type ExchangeType = 'SELL' | 'EXCHANGE' | 'DONATE'
@@ -22,17 +33,26 @@ const conditionOptions: { value: Condition; label: string }[] = [
   { value: 'POOR', label: 'Cũ' },
 ]
 
+const MAX_CATEGORIES = 3
+
 export default function CreateProductPage() {
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [categoryId, setCategoryId] = useState('')
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
   const [price, setPrice] = useState<number | ''>('')
   const [condition, setCondition] = useState<Condition>('GOOD')
   const [type, setType] = useState<ExchangeType>('SELL')
   const [address, setAddress] = useState('')
   const [images, setImages] = useState<string[]>([])
   const [imageUrlInput, setImageUrlInput] = useState('')
+
+  // Tags state
+  const [tags, setTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState('')
+
+  // Dynamic attributes state
+  const [attributes, setAttributes] = useState<Record<string, any>>({})
 
   const { data: categories } = useQuery({
     queryKey: ['categories'],
@@ -41,6 +61,25 @@ export default function CreateProductPage() {
       return data
     },
   })
+
+  // Get merged formSchema from all selected categories
+  const mergedFormSchema: FormFieldSchema[] = (() => {
+    if (!categories || selectedCategoryIds.length === 0) return []
+    const seen = new Set<string>()
+    const fields: FormFieldSchema[] = []
+    for (const catId of selectedCategoryIds) {
+      const cat = categories.find((c) => c.id === catId)
+      if (cat?.formSchema) {
+        for (const field of cat.formSchema) {
+          if (!seen.has(field.name)) {
+            seen.add(field.name)
+            fields.push(field)
+          }
+        }
+      }
+    }
+    return fields
+  })()
 
   const createMutation = useMutation({
     mutationFn: productsApi.create,
@@ -63,9 +102,59 @@ export default function CreateProductPage() {
     setImageUrlInput('')
   }
 
+  // Category toggle
+  const handleToggleCategory = useCallback(
+    (catId: string) => {
+      setSelectedCategoryIds((prev) => {
+        if (prev.includes(catId)) {
+          return prev.filter((id) => id !== catId)
+        }
+        if (prev.length >= MAX_CATEGORIES) {
+          toast.error(`Tối đa ${MAX_CATEGORIES} danh mục`)
+          return prev
+        }
+        return [...prev, catId]
+      })
+    },
+    [],
+  )
+
+  // Tag handlers
+  const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' || event.key === ',') {
+      event.preventDefault()
+      addTag()
+    }
+  }
+
+  const addTag = () => {
+    const value = tagInput.trim().toLowerCase()
+    if (!value) return
+    if (tags.includes(value)) {
+      toast.error('Tag đã tồn tại')
+      setTagInput('')
+      return
+    }
+    if (tags.length >= 10) {
+      toast.error('Tối đa 10 tags')
+      return
+    }
+    setTags([...tags, value])
+    setTagInput('')
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter((t) => t !== tagToRemove))
+  }
+
+  // Dynamic attribute change
+  const handleAttributeChange = (fieldName: string, value: any) => {
+    setAttributes((prev) => ({ ...prev, [fieldName]: value }))
+  }
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    if (!title.trim() || !description.trim() || !categoryId || !address.trim()) {
+    if (!title.trim() || !description.trim() || selectedCategoryIds.length === 0 || !address.trim()) {
       toast.error('Vui lòng điền đầy đủ thông tin bắt buộc')
       return
     }
@@ -74,14 +163,26 @@ export default function CreateProductPage() {
       return
     }
 
+    // Validate required dynamic fields
+    for (const field of mergedFormSchema) {
+      if (field.required && !attributes[field.name]) {
+        toast.error(`Vui lòng điền "${field.label}"`)
+        return
+      }
+    }
+
+    const hasAttributes = Object.keys(attributes).length > 0
+
     createMutation.mutate({
       title: title.trim(),
       description: description.trim(),
-      categoryId,
+      categoryIds: selectedCategoryIds,
       condition,
       type,
       price: type === 'SELL' ? Number(price) : undefined,
       images,
+      tags: tags.length > 0 ? tags : undefined,
+      attributes: hasAttributes ? attributes : undefined,
       location: { address: address.trim() },
     })
   }
@@ -102,6 +203,7 @@ export default function CreateProductPage() {
         </p>
       </div>
 
+      {/* Image section */}
       <section className="mx-auto flex w-full max-w-4xl flex-col gap-sm">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-headline-md text-base text-on-surface">Hình ảnh sản phẩm</h2>
@@ -157,6 +259,7 @@ export default function CreateProductPage() {
 
       <form onSubmit={handleSubmit} className="glass-card mx-auto w-full max-w-4xl rounded-2xl p-md md:p-xl">
         <div className="grid grid-cols-1 gap-x-xl gap-y-lg md:grid-cols-2">
+          {/* Title */}
           <div className="flex flex-col gap-xs md:col-span-2">
             <label className="font-label-bold text-label-bold text-on-surface-variant" htmlFor="title">
               Tiêu đề
@@ -172,26 +275,93 @@ export default function CreateProductPage() {
             />
           </div>
 
-          <div className="flex flex-col gap-xs">
-            <label className="font-label-bold text-label-bold text-on-surface-variant" htmlFor="category">
-              Danh mục
-            </label>
-            <select
-              id="category"
-              className="input-field h-14"
-              value={categoryId}
-              onChange={(event) => setCategoryId(event.target.value)}
-              required
-            >
-              <option value="">Chọn danh mục</option>
-              {categories?.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+          {/* Multi-Category Selector */}
+          <div className="flex flex-col gap-xs md:col-span-2">
+            <div className="flex items-center justify-between">
+              <label className="font-label-bold text-label-bold text-on-surface-variant">
+                Danh mục <span className="text-xs font-normal text-outline">(tối đa {MAX_CATEGORIES})</span>
+              </label>
+              <span className="text-xs text-on-surface-variant">
+                Đã chọn: {selectedCategoryIds.length}/{MAX_CATEGORIES}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {categories?.map((cat) => {
+                const isSelected = selectedCategoryIds.includes(cat.id)
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleToggleCategory(cat.id)}
+                    className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all ${
+                      isSelected
+                        ? 'border-primary bg-primary/10 text-primary ring-1 ring-primary/30'
+                        : 'border-outline-variant/60 bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low'
+                    }`}
+                  >
+                    {cat.icon && <span>{cat.icon}</span>}
+                    {cat.name}
+                    {isSelected && <CheckCircle size={16} />}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
+          {/* Dynamic Form Fields */}
+          {mergedFormSchema.length > 0 && (
+            <div className="flex flex-col gap-md md:col-span-2">
+              <div className="flex items-center gap-2 border-l-4 border-secondary pl-3">
+                <h3 className="font-headline-md text-base text-on-surface">Thông tin chi tiết</h3>
+              </div>
+              <div className="grid grid-cols-1 gap-md sm:grid-cols-2">
+                {mergedFormSchema.map((field) => (
+                  <div key={field.name} className="flex flex-col gap-xs">
+                    <label className="font-label-bold text-label-bold text-on-surface-variant" htmlFor={`attr-${field.name}`}>
+                      {field.label}
+                      {field.required && <span className="ml-1 text-error">*</span>}
+                    </label>
+                    {field.type === 'select' && field.options ? (
+                      <select
+                        id={`attr-${field.name}`}
+                        className="input-field h-12"
+                        value={attributes[field.name] ?? ''}
+                        onChange={(e) => handleAttributeChange(field.name, e.target.value)}
+                        required={field.required}
+                      >
+                        <option value="">Chọn {field.label.toLowerCase()}</option>
+                        {field.options.map((opt) => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    ) : field.type === 'number' ? (
+                      <input
+                        id={`attr-${field.name}`}
+                        type="number"
+                        className="input-field h-12"
+                        placeholder={`Nhập ${field.label.toLowerCase()}`}
+                        value={attributes[field.name] ?? ''}
+                        onChange={(e) => handleAttributeChange(field.name, e.target.value === '' ? '' : Number(e.target.value))}
+                        required={field.required}
+                      />
+                    ) : (
+                      <input
+                        id={`attr-${field.name}`}
+                        type="text"
+                        className="input-field h-12"
+                        placeholder={`Nhập ${field.label.toLowerCase()}`}
+                        value={attributes[field.name] ?? ''}
+                        onChange={(e) => handleAttributeChange(field.name, e.target.value)}
+                        required={field.required}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Condition */}
           <div className="flex flex-col gap-xs">
             <span className="font-label-bold text-label-bold text-on-surface-variant">Tình trạng</span>
             <div className="flex h-14 overflow-hidden rounded-xl bg-surface-container p-1">
@@ -212,6 +382,42 @@ export default function CreateProductPage() {
             </div>
           </div>
 
+          {/* Tags Input */}
+          <div className="flex flex-col gap-xs">
+            <label className="font-label-bold text-label-bold text-on-surface-variant">
+              Tags <span className="text-xs font-normal text-outline">(Enter hoặc dấu phẩy để thêm)</span>
+            </label>
+            <div className="flex min-h-[3.5rem] flex-wrap items-center gap-2 rounded-xl border border-outline-variant bg-surface-container-lowest px-3 py-2 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+              {tags.map((t) => (
+                <span
+                  key={t}
+                  className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary"
+                >
+                  <Tag size={12} />
+                  {t}
+                  <button
+                    type="button"
+                    onClick={() => removeTag(t)}
+                    className="ml-0.5 rounded-full p-0.5 hover:bg-primary/20"
+                    aria-label={`Xóa tag ${t}`}
+                  >
+                    <X size={12} />
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                className="min-w-[100px] flex-1 border-none bg-transparent text-sm outline-none placeholder:text-outline"
+                placeholder={tags.length === 0 ? 'VD: iphone, 99%, chính hãng' : 'Thêm tag...'}
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagKeyDown}
+                onBlur={addTag}
+              />
+            </div>
+          </div>
+
+          {/* Exchange type */}
           <div className="flex flex-col gap-xs md:col-span-2">
             <span className="font-label-bold text-label-bold text-on-surface-variant">Hình thức giao dịch</span>
             <div className="grid gap-sm sm:grid-cols-3">
@@ -236,6 +442,7 @@ export default function CreateProductPage() {
             </div>
           </div>
 
+          {/* Price */}
           {type === 'SELL' && (
             <div className="flex flex-col gap-xs">
               <label className="font-label-bold text-label-bold text-on-surface-variant" htmlFor="price">
@@ -257,6 +464,7 @@ export default function CreateProductPage() {
             </div>
           )}
 
+          {/* Location */}
           <div className={`flex flex-col gap-xs ${type === 'SELL' ? '' : 'md:col-span-2'}`}>
             <label className="font-label-bold text-label-bold text-on-surface-variant" htmlFor="location">
               Khu vực giao dịch
@@ -275,6 +483,7 @@ export default function CreateProductPage() {
             </div>
           </div>
 
+          {/* Description */}
           <div className="flex flex-col gap-xs md:col-span-2">
             <label className="font-label-bold text-label-bold text-on-surface-variant" htmlFor="description">
               Mô tả chi tiết sản phẩm

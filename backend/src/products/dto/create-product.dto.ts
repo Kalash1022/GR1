@@ -6,6 +6,12 @@ import {
   IsEnum,
   IsArray,
   ValidateNested,
+  ArrayMaxSize,
+  ArrayMinSize,
+  ArrayUnique,
+  Min,
+  Max,
+  IsObject,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -19,13 +25,32 @@ export class LocationDto {
 
   @ApiPropertyOptional({ example: 10.762622 })
   @IsNumber()
+  @Min(-90)
+  @Max(90)
   @IsOptional()
   latitude?: number;
 
   @ApiPropertyOptional({ example: 106.660172 })
   @IsNumber()
+  @Min(-180)
+  @Max(180)
   @IsOptional()
   longitude?: number;
+
+  @ApiPropertyOptional({ example: 'hcm' })
+  @IsString()
+  @IsOptional()
+  provinceId?: string;
+
+  @ApiPropertyOptional({ example: 'hcm-q1' })
+  @IsString()
+  @IsOptional()
+  districtId?: string;
+
+  @ApiPropertyOptional({ example: 'hcm-q1-w1' })
+  @IsString()
+  @IsOptional()
+  wardId?: string;
 }
 
 export class CreateProductDto {
@@ -39,13 +64,29 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty({ example: 'category-uuid-here' })
-  @IsString()
+  @ApiProperty({ type: [String], example: ['category-uuid-1', 'category-uuid-2'] })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayUnique()
+  @ArrayMaxSize(3, { message: 'A product can belong to a maximum of 3 categories' })
+  @IsString({ each: true })
   @IsNotEmpty()
-  categoryId: string;
+  categoryIds: string[];
+
+  @ApiPropertyOptional({ type: [String], example: ['iphone', '99%'] })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[];
+
+  @ApiPropertyOptional({ type: Object, example: { ram: '8GB', memory: '256GB' } })
+  @IsObject()
+  @IsOptional()
+  attributes?: Record<string, any>;
 
   @ApiPropertyOptional({ example: 15000000 })
   @IsNumber()
+  @Min(0)
   @IsOptional()
   price?: number;
 

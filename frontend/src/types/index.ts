@@ -13,11 +13,20 @@ export interface User {
   }
 }
 
+export interface FormFieldSchema {
+  name: string
+  label: string
+  type: 'string' | 'number' | 'select'
+  options?: string[]
+  required?: boolean
+}
+
 export interface Category {
   id: string
   name: string
   slug: string
   icon?: string
+  formSchema?: FormFieldSchema[]
   _count?: {
     products: number
   }
@@ -29,11 +38,19 @@ export interface ProductImage {
   productId: string
 }
 
+export interface Tag {
+  id: string
+  name: string
+}
+
 export interface Location {
   id: string
   address: string
   latitude?: number
   longitude?: number
+  provinceId?: string
+  districtId?: string
+  wardId?: string
   productId: string
 }
 
@@ -45,17 +62,20 @@ export interface Product {
   condition: 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR' | 'POOR'
   type: 'SELL' | 'EXCHANGE' | 'DONATE'
   status: 'AVAILABLE' | 'SOLD' | 'EXCHANGED' | 'DONATED'
+  attributes?: Record<string, any>
   createdAt: string
   updatedAt: string
   ownerId: string
-  categoryId: string
   images: ProductImage[]
   location?: Location
-  category: Category
+  categories: Category[]
+  tags?: Tag[]
   owner: Pick<User, 'id' | 'name' | 'email' | 'phone' | 'avatar'> & {
     createdAt?: string
     _count?: { products: number }
   }
+  distanceMeters?: number
+  distanceKm?: number
 }
 
 export interface PaginatedResponse<T> {
@@ -92,4 +112,7 @@ export interface Report {
   reporterId: string
   targetUserId?: string
   targetProductId?: string
+  reporter?: Pick<User, 'id' | 'name' | 'email'>
+  targetUser?: Pick<User, 'id' | 'name' | 'email' | 'isActive'>
+  targetProduct?: Pick<Product, 'id' | 'title' | 'status'>
 }

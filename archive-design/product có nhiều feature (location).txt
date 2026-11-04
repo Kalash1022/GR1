@@ -1,0 +1,17 @@
+product có nhiều feature (location)
+địa chỉ
+tiêu chí tìm kiếm 
+tìm kiếm gàn đúng
+tìm kiếm trên không gian spasion index
+recommendation content base collaborative fingtring 2 người giống profile có thể cùng quan tâm 1 sản phẩm 
+	đưa yếu tố mới cho người dùng (tôi muốn và tôi có lẽ cần) 
+chat bot
+kiếm tiền dựa trên quảng cáo
+trao đổi đồ
+đóng góp cho xã hội bên cạnh kinh tế
+matching 
+khảo sát để làm tài liệu đặc tả
+admin lưu vết các report cho users
+nhìn lại vấn đề
+meeting note trong hôm nay
+2 3 ngày quyết định

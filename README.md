@@ -32,6 +32,7 @@ Dự án được thiết kế theo kiến trúc **Client-Server**:
 - Node.js `20.19+` hoặc `22.12+`
 - npm
 - PostgreSQL
+- PostGIS phải được cài cho PostgreSQL; migration bật extension `postgis` và `unaccent`. Tài khoản chạy migration cần quyền tạo extension, hoặc nhờ quản trị DB bật trước.
 
 ## Hướng Dẫn Cài Đặt (Development Environment)
 
@@ -45,7 +46,7 @@ cd GR1
 Di chuyển vào thư mục backend và cài dependencies:
 ```bash
 cd backend
-npm install
+npm ci
 ```
 
 Tạo file `.env` từ file mẫu:
@@ -73,6 +74,10 @@ npx prisma migrate deploy
 npx prisma db seed
 ```
 
+Chỉ chạy seed trên database phát triển riêng: seed hiện xóa dữ liệu nghiệp vụ cũ trước khi tạo dữ liệu mẫu. `JWT_SECRET` phải được cấu hình; API không dùng khóa mặc định khi thiếu biến này.
+
+Migration `20261104000000_sync_product_relations` chuyển quan hệ một danh mục sang nhiều danh mục và giữ lại liên kết danh mục cũ; bổ sung tags, thuộc tính động và schema biểu mẫu. Nếu database cũ đã từng được sửa bằng `prisma db push`, sao lưu rồi kiểm tra drift trước khi áp dụng; không reset database có dữ liệu cần giữ. Hướng dẫn này ưu tiên database phát triển mới và chuỗi migration đã lưu trong repo.
+
 Khởi động backend:
 ```bash
 npm run start:dev
@@ -84,7 +89,7 @@ Backend chạy tại `http://localhost:3000`. Swagger API có tại:
 Mở terminal mới tại thư mục gốc dự án:
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 Frontend chạy tại:
@@ -99,6 +104,8 @@ Sau khi chạy seed, có thể đăng nhập bằng các tài khoản sau (chỉ
 | Admin | `admin@secondhand.com` | `admin123` |
 | Người đăng sản phẩm | `provider@example.com` | `provider123` |
 | Người tìm sản phẩm | `seeker@example.com` | `seeker123` |
+
+Đây là tài khoản mẫu local. Không triển khai các tài khoản này lên dịch vụ công khai. Đăng ký công khai chỉ cho phép `PROVIDER` và `SEEKER`; Admin được tạo qua seed hoặc công cụ quản trị dữ liệu có kiểm soát.
 
 ## Build Production
 

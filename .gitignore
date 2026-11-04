@@ -22,3 +22,7 @@ Thumbs.db
 # Uploaded files
 uploads/
 backend/uploads/
+
+# Compiler caches and local validation output
+*.tsbuildinfo
+.validation/

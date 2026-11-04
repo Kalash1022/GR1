@@ -1,6 +1,6 @@
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Bell, Home, LogIn, LogOut, Menu, Package, Plus, Search, User, UserPlus } from 'lucide-react'
+import { Bell, Home, LogIn, LogOut, Menu, Package, Plus, Search, User, UserPlus, ShieldAlert, MessageCircle } from 'lucide-react'
 
 export default function Layout() {
   const { user, logout, isAuthenticated } = useAuth()
@@ -26,13 +26,7 @@ export default function Layout() {
       <header className="glass sticky top-0 z-40 w-full shadow-sm">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-margin-mobile md:h-20 md:px-margin-desktop">
           <div className="flex min-w-0 items-center gap-3 md:gap-5">
-            <button
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary"
-              aria-label="Mở menu"
-              type="button"
-            >
-              <Menu size={22} />
-            </button>
+
 
             <Link to="/" className="flex min-w-0 items-center gap-2 text-primary">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-on-primary shadow-sm">
@@ -53,22 +47,30 @@ export default function Layout() {
               <Search size={17} />
               Khám phá
             </NavLink>
-            {isAuthenticated && (
+            {isAuthenticated && user?.role !== 'ADMIN' && (
               <NavLink to="/products/new" className={navLinkClass}>
                 <Plus size={17} />
                 Đăng tin
               </NavLink>
             )}
+            {user?.role === 'ADMIN' && (
+              <NavLink to="/admin" className={navLinkClass}>
+                <ShieldAlert size={17} />
+                Admin
+              </NavLink>
+            )}
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
-            <button
-              className="hidden h-11 w-11 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary sm:flex"
-              aria-label="Thông báo"
-              type="button"
-            >
-              <Bell size={21} />
-            </button>
+            {isAuthenticated && (
+              <Link
+                to="/chat"
+                className="hidden h-11 w-11 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-primary sm:flex"
+                aria-label="Tin nhắn"
+              >
+                <MessageCircle size={21} />
+              </Link>
+            )}
 
             {isAuthenticated ? (
               <>
@@ -143,6 +145,7 @@ export default function Layout() {
             <Search size={24} />
             <span className="mt-1">Tìm kiếm</span>
           </NavLink>
+          {user?.role !== 'ADMIN' && (
           <NavLink
             to="/products/new"
             className={({ isActive }) =>
@@ -156,6 +159,7 @@ export default function Layout() {
             </span>
             <span>Đăng tin</span>
           </NavLink>
+          )}
           <NavLink
             to={isAuthenticated ? '/profile' : '/login'}
             className={({ isActive }) =>

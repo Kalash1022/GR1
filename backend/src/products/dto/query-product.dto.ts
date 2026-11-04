@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsNumber, IsEnum, Min } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsInt, IsEnum, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ExchangeType, ProductStatus } from '@prisma/client';
@@ -13,6 +13,11 @@ export class QueryProductDto {
   @IsString()
   @IsOptional()
   categoryId?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  tag?: string;
 
   @ApiPropertyOptional({ enum: ExchangeType })
   @IsEnum(ExchangeType)
@@ -38,15 +43,16 @@ export class QueryProductDto {
 
   @ApiPropertyOptional({ example: 1 })
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
   @Min(1)
   @IsOptional()
   page?: number;
 
   @ApiPropertyOptional({ example: 12 })
   @Type(() => Number)
-  @IsNumber()
+  @IsInt()
   @Min(1)
+  @Max(100)
   @IsOptional()
   limit?: number;
 }
